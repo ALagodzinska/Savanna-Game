@@ -46,7 +46,8 @@ Welcome to the Savanna. What would ypu like to do?
 PRESS 'L' TO ADD A LION, PRESS 'A' TO ADD AN ANTELOPE TO GAME FIELD
 {Convert.ToChar(1)} - ANTELOPE | {Convert.ToChar(2)} - LION");
                     fieldBorder.DrawBorder();
-                    gameLogic.DrawXOnField(fieldHeight, fieldWidth, topStartPoint);
+                    gameLogic.ActionToMake();
+                    //gameLogic.DrawXOnField(fieldHeight, fieldWidth, topStartPoint);
                     Console.ReadLine();
                     break;
                 case 1:
