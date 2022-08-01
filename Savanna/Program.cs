@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Welcome to game Savanna");
+        StartGame game = new StartGame();
+        game.Start();
     }
 }
