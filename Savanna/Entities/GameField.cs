@@ -14,7 +14,6 @@
         public int Width { get; set; }
         public int TopPosition { get; set; }
         private ConsoleColor BorderColor;
-        private int IndentForBorder;
 
         public void DrawBorder()
         {

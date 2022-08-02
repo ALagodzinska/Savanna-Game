@@ -5,6 +5,7 @@ namespace Savanna
     public class GameLogic
     {
         UserOutput userOutput = new();
+        
 
         const int fieldHeight = 25;
         const int fieldWidth = 60;
@@ -52,23 +53,24 @@ namespace Savanna
                 switch (pressedKey.Key)
                 {
                     case ConsoleKey.A:
-                        var antelope = Animal.CreateAnAnimal(ConsoleKey.A);
-                        animals.Add(antelope);
-                        while (antelope.CurrentPosition == null)
+                        
+                        var createdAntelope = new Antelope();
+                        animals.Add(createdAntelope);
+                        while (createdAntelope.CurrentPosition == null)
                         {
-                            AddAnimalToGameField(antelope, gameField);
+                            AddAnimalToGameField(createdAntelope, gameField);
                         }
-                        DrawAnimal(antelope);
+                        DrawAnimal(createdAntelope);
                         break;
 
                     case ConsoleKey.L:
-                        var lion = Animal.CreateAnAnimal(ConsoleKey.L);
-                        animals.Add(lion);
-                        while (lion.CurrentPosition == null)
+                        var createdLion = new Lion();
+                        animals.Add(createdLion);
+                        while (createdLion.CurrentPosition == null)
                         {
-                            AddAnimalToGameField(lion, gameField);
+                            AddAnimalToGameField(createdLion, gameField);
                         }
-                        DrawAnimal(lion);
+                        DrawAnimal(createdLion);
                         break;
 
                     default:
@@ -82,7 +84,6 @@ namespace Savanna
 
         public void DrawAnimal(Animal animal)
         {
-            //+6 because of off top
             Console.SetCursorPosition(animal.CurrentPosition[0] + 1, animal.CurrentPosition[1] + topStartPoint + 1);
             var symbol = animal.Type == "Lion" ? Convert.ToChar(2) : Convert.ToChar(1);
             Console.Write(symbol);
@@ -96,14 +97,52 @@ namespace Savanna
             int[] coordinates = new int[2] { randomWidthPosition, randomHeightPosition };
             if(CheckIfPlaceIsTaken(coordinates) == false)
             {
-                animal.CurrentPosition = coordinates;                
+                animal.CurrentPosition = coordinates;               
             }
         }
 
         public bool CheckIfPlaceIsTaken(int[] coordinates)
-        {            
-            var foundAnimal = animals.FirstOrDefault(a => a.CurrentPosition == coordinates);
+        {
+            var foundAnimal = GetAnimalByCoordinates(coordinates);
             return foundAnimal != null ? true : false;
+        }
+
+        public Animal? GetAnimalByCoordinates(int[] coordinates)
+        {
+            return animals.FirstOrDefault(a => a.CurrentPosition == coordinates);
+        }
+
+
+
+        public void FindClosestAnimal(Antelope animal, GameField gameField)
+        {
+            int[] coordinates = new int[2];
+            List<Animal> closestAnimalList = new List<Animal>();
+            List<int[]> emtyPath = new List<int[]>();
+
+            for (int h = animal.CurrentPosition[1] - 1; h <= animal.CurrentPosition[1] + 1; h++)
+            {
+                for (int w = animal.CurrentPosition[0] - 1; w <= animal.CurrentPosition[0] + 1; w++)
+                {
+                    if (h >= gameField.Height || h < 0
+                        || w >= gameField.Width || w < 0
+                        || h == animal.CurrentPosition[1] && w == animal.CurrentPosition[0])
+                    {
+                        continue;
+                    }
+                    coordinates[0] = w;
+                    coordinates[1] = h;
+
+                    var foundAnimal = GetAnimalByCoordinates(coordinates);
+                    if(foundAnimal == null)
+                    {
+                        emtyPath.Add(coordinates);
+                        continue;
+                    }
+
+                    closestAnimalList.Add(foundAnimal);
+                }
+            }            
         }
     }
 }
