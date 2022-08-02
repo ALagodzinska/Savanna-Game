@@ -1,4 +1,4 @@
-﻿namespace Savanna
+﻿namespace Savanna.Entities
 {
     public class Menu
     {
@@ -9,16 +9,16 @@
             MenuIntro = menuIntro;
         }
 
-       
+
         private int SelectedOptionIndex;
 
-        
+
         private string[] Options;
 
-        
+
         private string MenuIntro;
 
-       
+
         private void DisplayMenu()
         {
             Console.WriteLine(MenuIntro);
