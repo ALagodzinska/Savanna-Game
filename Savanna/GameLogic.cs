@@ -114,15 +114,15 @@ namespace Savanna
 
 
 
-        public void FindClosestAnimal(Antelope animal, GameField gameField)
+        public void AnimalsAround(Animal animal, GameField gameField)
         {
             int[] coordinates = new int[2];
             List<Animal> closestAnimalList = new List<Animal>();
             List<int[]> emtyPath = new List<int[]>();
 
-            for (int h = animal.CurrentPosition[1] - 1; h <= animal.CurrentPosition[1] + 1; h++)
+            for (int h = animal.CurrentPosition[1] - animal.VisionRange; h <= animal.CurrentPosition[1] + animal.VisionRange; h++)
             {
-                for (int w = animal.CurrentPosition[0] - 1; w <= animal.CurrentPosition[0] + 1; w++)
+                for (int w = animal.CurrentPosition[0] - animal.VisionRange; w <= animal.CurrentPosition[0] + animal.VisionRange; w++)
                 {
                     if (h >= gameField.Height || h < 0
                         || w >= gameField.Width || w < 0
@@ -142,7 +142,38 @@ namespace Savanna
 
                     closestAnimalList.Add(foundAnimal);
                 }
-            }            
+            }
+            if(animal.Type == "Lion")
+            {
+                var antelopesAround = closestAnimalList.FindAll(a => a.Type == "Antelope");
+                if(antelopesAround != null)
+                {
+                    var random = new Random();
+                    int index = random.Next(antelopesAround.Count);
+                    animal.CurrentPosition = antelopesAround[index].CurrentPosition;
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        public void FindClosestAntilope(Lion lion, List<Animal> animalsAround )
+        {
+            var antelopesAround = animalsAround.FindAll(a => a.Type == "Antelope");
+            //List<Animal> closestAnimalList = new List<Animal>();
+            //if (antelopesAround != null)
+            //{
+            //    foreach(var antelope in antelopesAround)
+            //    {
+            //        if ((antelope.CurrentPosition[0]>= lion.CurrentPosition[0] - 1 || antelope.CurrentPosition[0] >= lion.CurrentPosition[0] + 1) &&
+            //            (antelope.CurrentPosition[1] >= lion.CurrentPosition[1] - 1 || antelope.CurrentPosition[1] >= lion.CurrentPosition[1] + 1))
+            //        {
+            //            closestAnimalList.Add(antelope);
+            //        }
+            //    }
+            //}
         }
     }
 }
