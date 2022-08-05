@@ -7,8 +7,8 @@ namespace Savanna
         UserOutput userOutput = new();
 
 
-        const int fieldHeight = 10;
-        const int fieldWidth = 10;
+        const int fieldHeight = 20;
+        const int fieldWidth = 20;
         const int topStartPoint = 5;
         const ConsoleColor borderColor = ConsoleColor.DarkGreen;
 
@@ -88,11 +88,23 @@ namespace Savanna
 
         public void DrawAnimal(Animal animal)
         {
-            Console.SetCursorPosition(animal.CurrentPosition[0] + 1, animal.CurrentPosition[1] + topStartPoint + 1);
-            var symbol = animal.Type == "Lion" ? Convert.ToChar(2) : Convert.ToChar(1);
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = animal.Type == "Lion" ? ConsoleColor.Red : ConsoleColor.White;
-            Console.Write(symbol);
+            if (animal.IsAlive == true)
+            {
+                Console.SetCursorPosition(animal.CurrentPosition[0] + 1, animal.CurrentPosition[1] + topStartPoint + 1);
+                var symbol = animal.Type == "Lion" ? Convert.ToChar(2) : Convert.ToChar(1);
+                Console.BackgroundColor = ConsoleColor.Black;
+                if (animal.Type == "Lion")
+                {
+                    Console.ForegroundColor = animal.Ate == true ? ConsoleColor.DarkRed : ConsoleColor.Red;
+                    animal.Ate = false;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.Write(symbol);
+            }
+            
             Console.ResetColor();
         }
 
@@ -129,7 +141,7 @@ namespace Savanna
         }
         public Animal? GetAnimalByCurrentCoordinates(int[] coordinates)
         {
-            var animal = animals.FirstOrDefault(a => a.CurrentPosition != null 
+            var animal = animals.Where(a => a.IsAlive == true).FirstOrDefault(a => a.CurrentPosition != null 
             && a.CurrentPosition[0] == coordinates[0] 
             && a.CurrentPosition[1] == coordinates[1]);
             return animal;
@@ -177,6 +189,7 @@ namespace Savanna
                 animal.NextPosition = null;
                 DrawAnimal(animal);
             }
+            animals.RemoveAll(a => a.IsAlive == false);
 
         }
 
@@ -221,7 +234,7 @@ namespace Savanna
 
         public Animal GetClosestAnimal(List<Animal> animalsAround, Animal currentAnimal)
         {
-            int minDistance = currentAnimal.VisionRange * 2;
+            double minDistance = currentAnimal.VisionRange * 2;
             int[] closestAnimalCoordinats = new int[2];
 
             foreach (var animal in animalsAround)
@@ -269,18 +282,22 @@ namespace Savanna
             return moves[moveIndex];
         }
 
-        public int FindDistanceBetweenTwoCoordinates(int[] animalCoordinates, Animal currentAnimal)
+        public double FindDistanceBetweenTwoCoordinates(int[] animalCoordinates, Animal currentAnimal)
         {
             var widthDifference = animalCoordinates[0] - currentAnimal.CurrentPosition[0];
             var heightDifference = animalCoordinates[1] - currentAnimal.CurrentPosition[1];
             var distance = Math.Sqrt((widthDifference * widthDifference) + (heightDifference * heightDifference));
-            return Convert.ToInt32(distance);
+            return distance;
         }
 
         public void NextLionAction(Animal lionToMove, Animal closestAntelope, List<int[]> possibleSpacesToMove)
         {
             var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove);
             if (distance == 1 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
+            {
+                LionEatAntelope(lionToMove, closestAntelope);
+            }
+            else if(distance > 1 && distance < 2 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
             {
                 lionToMove.NextPosition = closestAntelope.CurrentPosition;
             }
@@ -292,7 +309,7 @@ namespace Savanna
 
         public int[] MoveCloserToAntelope(List<int[]> freeSpaceToMove, Animal closestAntelope)
         {
-            int minDistance = 10;
+            double minDistance = 10;
             int[] closestMoveCoordinate = new int[2];
 
             foreach (var space in freeSpaceToMove)
@@ -325,10 +342,14 @@ namespace Savanna
                     {
                         distancesUntilLions[i] = 0.5;
                     }
-                    else if (previousDistance <= 1 && currentDistance > previousDistance)
+                    else if (previousDistance < 2 && currentDistance > previousDistance)
                     {
                         distancesUntilLions[i] = 4;
                     }
+                    //else if (previousDistance > 1  && previousDistance < 2 && currentDistance > previousDistance)
+                    //{
+                    //    distancesUntilLions[i] = 3;
+                    //}
                     else if (previousDistance == 2 && currentDistance > previousDistance)
                     {
                         distancesUntilLions[i] = 1.5;
@@ -358,10 +379,11 @@ namespace Savanna
             return maxDistance;
         }
 
-        //public void LionEatAntelope(Animal lion, Animal antelope)
-        //{
-        //    lion.NextPosition = antelope.CurrentPosition;
-        //    antelope.IsAlive = false;
-        //}
+        public void LionEatAntelope(Animal lion, Animal antelope)
+        {
+            lion.NextPosition = antelope.CurrentPosition;
+            lion.Ate = true;
+            antelope.IsAlive = false;
+        }
     }
 }

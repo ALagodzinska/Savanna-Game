@@ -5,7 +5,7 @@
         public Lion()
         {
             IsAlive = true;
-            VisionRange = 2;
+            VisionRange = 1;
             Type = "Lion";
         }
     }

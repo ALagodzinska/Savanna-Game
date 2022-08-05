@@ -7,5 +7,6 @@
         public int[]? NextPosition { get; set; }
         public bool? IsAlive { get; set; }
         public int VisionRange { get; set; }
+        public bool Ate { get; set; }
     }
 }
