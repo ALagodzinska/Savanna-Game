@@ -11,7 +11,7 @@ namespace Savanna
 
         public void Start()
         {
-            Console.Title = "GAME OF LIFE";
+            Console.Title = "SAVANNA GAME";
             RunMainMenu();
         }
 
