@@ -227,7 +227,7 @@
 
                 if (antelopesAround.Count != 0)
                 {
-                    var closestAntelope = (Antelope)GetClosestAnimal(convertedAntelopes, animal);
+                    var closestAntelope = (Antelope)GetClosestAntelope(convertedAntelopes, animal);
 
                     if(closestAntelope != null)
                     {
@@ -330,7 +330,7 @@
         /// <param name="animalsAround">List with animals in the vision range.</param>
         /// <param name="currentAnimal">Animal whose nearest animal are to be found.</param>
         /// <returns>Nearest animal.</returns>
-        private Animal? GetClosestAnimal(List<Antelope> animalsAround, Animal currentAnimal)
+        private Animal? GetClosestAntelope(List<Antelope> animalsAround, Animal currentAnimal)
         {
             double minDistance = currentAnimal.VisionRange * 2;
             int[] closestAnimalCoordinats = new int[2];
