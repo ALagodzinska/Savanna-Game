@@ -1,14 +1,17 @@
-﻿using Savanna.Entities;
-
-namespace Savanna
+﻿namespace Savanna
 {
+    using Savanna.Entities;
+
+    /// <summary>
+    /// Class responsible for running the game.
+    /// </summary>
     public class StartGame
     {
-        GameLogic gameLogic = new();
-        UserOutput userOutput = new();
+        GameLogic gameLogic = new();        
 
-        
-
+        /// <summary>
+        /// Starts game.
+        /// </summary>
         public void Start()
         {
             Console.Title = "SAVANNA GAME";
@@ -34,9 +37,7 @@ Welcome to the Savanna. What would ypu like to do?
             string[] options = { "Play Game", "Exit Game" };
 
             Menu mainMenu = new Menu(options, menuIntro);
-            var selectedIndex = mainMenu.SelectFromMenu();
-
-            
+            var selectedIndex = mainMenu.SelectFromMenu();            
 
             switch (selectedIndex)
             {
@@ -44,9 +45,19 @@ Welcome to the Savanna. What would ypu like to do?
                     gameLogic.PlayGame();
                     break;
                 case 1:
-                    gameLogic.ExitGame();
+                    ExitGame();
                     break;
             }
-        }        
+        }
+
+        /// <summary>
+        /// Exits the game.
+        /// </summary>
+        private void ExitGame()
+        {
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey(true);
+            Environment.Exit(0);
+        }
     }
 }

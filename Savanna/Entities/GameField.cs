@@ -1,20 +1,44 @@
 ﻿namespace Savanna.Entities
 {
+    /// <summary>
+    /// Stores data about game field and method to draw game border.
+    /// </summary>
     public class GameField
     {
-        public GameField(int width, int height, int topPosition, ConsoleColor borderColor)
+        /// <summary>
+        /// Creates new game field with assigned values.
+        /// </summary>
+        public GameField()
         {
-            Width = width;
-            Height = height;
-            BorderColor = borderColor;
-            TopPosition = topPosition;
+            Height = 25;
+            Width = 45;
+            TopPosition = 5;
+            BorderColor = ConsoleColor.DarkGreen;            
         }
 
+        /// <summary>
+        /// Height of the game field.
+        /// </summary>
         public int Height { get; set; }
+
+        /// <summary>
+        /// Width of the game field.
+        /// </summary>
         public int Width { get; set; }
+
+        /// <summary>
+        /// Game field offset from top.
+        /// </summary>
         public int TopPosition { get; set; }
+
+        /// <summary>
+        /// Border color for game field.
+        /// </summary>
         private ConsoleColor BorderColor;
 
+        /// <summary>
+        /// Draws a border line for game field.
+        /// </summary>
         public void DrawBorder()
         {
             string startCorner = "╔";
@@ -38,7 +62,7 @@
             }
             startCorner += cornerBottomLeft;
 
-            //bottom of the border
+            //draw bottom of the border
             for (int w = 0; w < Width; w++)
             {
                 startCorner += horizontalLine;

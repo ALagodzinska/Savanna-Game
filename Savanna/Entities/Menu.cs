@@ -1,7 +1,15 @@
 ﻿namespace Savanna.Entities
 {
+    /// <summary>
+    /// Used for creating and displaying menu to user.
+    /// </summary>
     public class Menu
     {
+        /// <summary>
+        /// Set initial values for menu fields.
+        /// </summary>
+        /// <param name="options">Menu options to choose from.</param>
+        /// <param name="menuIntro">Title and menu control rules.</param>
         public Menu(string[] options, string menuIntro)
         {
             SelectedOptionIndex = 0;
@@ -9,16 +17,24 @@
             MenuIntro = menuIntro;
         }
 
-
+        /// <summary>
+        /// Index value of selected option.
+        /// </summary>
         private int SelectedOptionIndex;
 
-
+        /// <summary>
+        /// Menu options to choose from.
+        /// </summary>
         private string[] Options;
 
-
+        /// <summary>
+        /// Title and menu control rules.
+        /// </summary>
         private string MenuIntro;
 
-
+        /// <summary>
+        /// Displays menu to user.
+        /// </summary>
         private void DisplayMenu()
         {
             Console.WriteLine(MenuIntro);
@@ -31,7 +47,12 @@
             Console.ResetColor();
         }
 
-        public void OptionStyle(bool isSelelcted, string currentOption)
+        /// <summary>
+        /// By parameters selects how to display the option in the menu.
+        /// </summary>
+        /// <param name="isSelelcted">Used to understand if this menu option is selected by a user or not.</param>
+        /// <param name="currentOption">One option to display.</param>
+        private void OptionStyle(bool isSelelcted, string currentOption)
         {
             string sideSymbol = isSelelcted ? Convert.ToChar(3).ToString() : Convert.ToChar(4).ToString();
             string prefix = isSelelcted ? Convert.ToChar(16).ToString() : " ";
@@ -40,6 +61,10 @@
             Console.WriteLine($"{prefix} {sideSymbol} {currentOption} {sideSymbol}");
         }
 
+        /// <summary>
+        /// Allows to select an option from the menu.
+        /// </summary>
+        /// <returns>Selected option index.</returns>
         public int SelectFromMenu()
         {
             ConsoleKey keyPressed;
@@ -54,16 +79,20 @@
                 if (keyPressed == ConsoleKey.UpArrow)
                 {
                     SelectedOptionIndex--;
+                    
                     if (SelectedOptionIndex == -1)
                     {
+                        //move to the last option
                         SelectedOptionIndex = Options.Length - 1;
                     }
                 }
                 else if (keyPressed == ConsoleKey.DownArrow)
                 {
                     SelectedOptionIndex++;
+                    
                     if (SelectedOptionIndex == Options.Length)
                     {
+                        //move to first option
                         SelectedOptionIndex = 0;
                     }
                 }

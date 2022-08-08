@@ -1,7 +1,13 @@
 ﻿namespace Savanna
 {
+    /// <summary>
+    /// Class responsible for displaying information to user.
+    /// </summary>
     public class UserOutput
     {
+        /// <summary>
+        /// Displays game rules to a user.
+        /// </summary>
         public void DisplayGameRules()
         {
             Console.Clear();
