@@ -5,7 +5,7 @@
         public Antelope()
         {
             IsAlive = true;
-            VisionRange = 3;
+            VisionRange = 2;
             Type = "Antelope";
         }
     }    

@@ -7,10 +7,14 @@ namespace Savanna
         UserOutput userOutput = new();
 
 
-        const int fieldHeight = 20;
-        const int fieldWidth = 20;
+        const int fieldHeight = 25;
+        const int fieldWidth = 45;
         const int topStartPoint = 5;
         const ConsoleColor borderColor = ConsoleColor.DarkGreen;
+
+        public GameField gameField = new GameField(fieldWidth, fieldHeight, topStartPoint, borderColor);
+
+
 
         public static List<Animal> animals = new List<Animal>();
         public void ExitGame()
@@ -20,70 +24,67 @@ namespace Savanna
             Environment.Exit(0);
         }
 
-        public GameField CreateGameField() => new GameField(fieldWidth, fieldHeight, topStartPoint, borderColor);
-
         public void PlayGame()
         {
             userOutput.DisplayGameRules();
-            var gameField = CreateGameField();
             gameField.DrawBorder();
-            ActionToMake(gameField);
+            NestedLoop();
         }
 
-        public void DrawXOnField(int borderHeight, int borderWidth, int offsetFromTop)
+        public void NestedLoop()
         {
-            for (int y = offsetFromTop + 1; y < borderHeight + offsetFromTop + 1; y++)
-            {
-                for (int x = 1; x < borderWidth + 1; x++)
-                {
-                    Console.SetCursorPosition(x, y);
-                    Console.Write("X");
-                }
-            }
-        }
-
-        public void ActionToMake(GameField gameField)
-        {
-            ConsoleKeyInfo pressedKey;
-
+            bool exit = false;
             do
             {
-                pressedKey = Console.ReadKey(true);
-                switch (pressedKey.Key)
+                Thread.Sleep(1000);
+                if (animals.Count != 0)
                 {
-                    case ConsoleKey.A:
-
-                        var createdAntelope = new Antelope();
-                        while (createdAntelope.CurrentPosition == null)
-                        {
-                            AddAnimalToGameField(createdAntelope, gameField);
-                        }
-                        animals.Add(createdAntelope);
-                        DrawAnimal(createdAntelope);
-                        break;
-
-                    case ConsoleKey.L:
-                        var createdLion = new Lion();                        
-                        while (createdLion.CurrentPosition == null)
-                        {
-                            AddAnimalToGameField(createdLion, gameField);
-                        }
-                        animals.Add(createdLion);
-                        DrawAnimal(createdLion);
-                        break;
-
-                    case ConsoleKey.D:
-                        MoveAllAnimalsToNextPosition(gameField);
-
-                        break;
-
-                    default:
-                        Console.SetCursorPosition(0, 3);
-                        Console.WriteLine("Wrong input");
-                        break;
+                    MoveAllAnimalsToNextPosition();
                 }
-            } while (pressedKey.Key != ConsoleKey.Escape);
 
+                Task.Factory.StartNew(() =>
+                {
+                    var key = Console.ReadKey(true).Key;
+                    if (key == ConsoleKey.A)
+                    {
+                        var createdAntelope = CreateNewAntelope();
+                        DrawAnimal(createdAntelope);
+                    }
+                    if (key == ConsoleKey.L)
+                    {
+                        var createdLion = CreateNewLion();
+                        DrawAnimal(createdLion);
+                    }
+                    if (key == ConsoleKey.Escape)
+                    {
+                        exit = true;
+                    }
+                });
+            } while (!exit);
+        }
+
+        public Antelope CreateNewAntelope()
+        {
+            var createdAntelope = new Antelope();
+            while (createdAntelope.CurrentPosition == null)
+            {
+                AddAnimalToGameField(createdAntelope);
+            }
+            animals.Add(createdAntelope);
+
+            return createdAntelope;
+        }
+
+        public Lion CreateNewLion()
+        {
+            var createdLion = new Lion();
+            while (createdLion.CurrentPosition == null)
+            {
+                AddAnimalToGameField(createdLion);
+            }
+            animals.Add(createdLion);
+
+            return createdLion;
         }
 
         public void DrawAnimal(Animal animal)
@@ -104,11 +105,11 @@ namespace Savanna
                 }
                 Console.Write(symbol);
             }
-            
+
             Console.ResetColor();
         }
 
-        public void AddAnimalToGameField(Animal animal, GameField gameField)
+        public void AddAnimalToGameField(Animal animal)
         {
             Random random = new Random();
             var randomWidthPosition = random.Next(0, gameField.Width - 1);
@@ -134,19 +135,19 @@ namespace Savanna
 
         public Animal? GetAnimalByNextCoordinates(int[] coordinates)
         {
-            var animal = animals.FirstOrDefault(a => a.NextPosition != null 
-            && a.NextPosition[0] == coordinates[0] 
+            var animal = animals.FirstOrDefault(a => a.NextPosition != null
+            && a.NextPosition[0] == coordinates[0]
             && a.NextPosition[1] == coordinates[1]);
             return animal;
         }
         public Animal? GetAnimalByCurrentCoordinates(int[] coordinates)
         {
-            var animal = animals.Where(a => a.IsAlive == true).FirstOrDefault(a => a.CurrentPosition != null 
-            && a.CurrentPosition[0] == coordinates[0] 
+            var animal = animals.Where(a => a.IsAlive == true).FirstOrDefault(a => a.CurrentPosition != null
+            && a.CurrentPosition[0] == coordinates[0]
             && a.CurrentPosition[1] == coordinates[1]);
             return animal;
         }
-        public List<Animal> AnimalsInVisionRange(Animal animal, GameField gameField)
+        public List<Animal> AnimalsInVisionRange(Animal animal)
         {
             int[] coordinates = new int[2];
             List<Animal> closestAnimalList = new List<Animal>();
@@ -176,11 +177,11 @@ namespace Savanna
             return closestAnimalList;
         }
 
-        public void MoveAllAnimalsToNextPosition(GameField gameField)
+        public void MoveAllAnimalsToNextPosition()
         {
             foreach (var animal in animals)
             {
-                NextMoveForAnimals(animal, gameField);
+                NextMoveForAnimals(animal);
             }
             gameField.DrawBorder();
             foreach (var animal in animals)
@@ -193,10 +194,10 @@ namespace Savanna
 
         }
 
-        public void NextMoveForAnimals(Animal animal, GameField gameField)
+        public void NextMoveForAnimals(Animal animal)
         {
-            var closestAnimalList = AnimalsInVisionRange(animal, gameField);
-            var movePossibility = PossibleMoves(animal, gameField);
+            var closestAnimalList = AnimalsInVisionRange(animal);
+            var movePossibility = PossibleMoves(animal);
 
             if (movePossibility.Count == 0)
             {
@@ -250,7 +251,7 @@ namespace Savanna
             return animals.FirstOrDefault(a => a.CurrentPosition == closestAnimalCoordinats);
         }
 
-        public List<int[]> PossibleMoves(Animal animal, GameField gameField)
+        public List<int[]> PossibleMoves(Animal animal)
         {
             List<int[]> moves = new List<int[]>();
 
@@ -297,7 +298,7 @@ namespace Savanna
             {
                 LionEatAntelope(lionToMove, closestAntelope);
             }
-            else if(distance > 1 && distance < 2 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
+            else if (distance > 1 && distance < 2 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
             {
                 lionToMove.NextPosition = closestAntelope.CurrentPosition;
             }
@@ -342,14 +343,14 @@ namespace Savanna
                     {
                         distancesUntilLions[i] = 0.5;
                     }
-                    else if (previousDistance < 2 && currentDistance > previousDistance)
+                    else if (previousDistance <= 1 && currentDistance > previousDistance)
                     {
                         distancesUntilLions[i] = 4;
                     }
-                    //else if (previousDistance > 1  && previousDistance < 2 && currentDistance > previousDistance)
-                    //{
-                    //    distancesUntilLions[i] = 3;
-                    //}
+                    else if (previousDistance > 1 && previousDistance < 2 && currentDistance > previousDistance)
+                    {
+                        distancesUntilLions[i] = 3;
+                    }
                     else if (previousDistance == 2 && currentDistance > previousDistance)
                     {
                         distancesUntilLions[i] = 1.5;
