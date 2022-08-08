@@ -6,11 +6,6 @@
     public class Animal
     {
         /// <summary>
-        /// Stores information about type of animal.
-        /// </summary>
-        public string? Type { get; set; }
-
-        /// <summary>
         /// Stores two coordinates for current animal position. [0] is width coordinate. [1] is height coordinate.
         /// </summary>
         public int[]? CurrentPosition { get; set; }

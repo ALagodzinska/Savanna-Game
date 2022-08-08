@@ -124,11 +124,12 @@
             if (animal.IsAlive == true)
             {
                 Console.SetCursorPosition(animal.CurrentPosition[0] + 1, animal.CurrentPosition[1] + gameField.TopPosition + 1);
+                var isLion = animal.GetType() == typeof(Lion);
 
-                var symbol = animal.Type == "Lion" ? Convert.ToChar(2) : Convert.ToChar(1);
+                var symbol = isLion ? Convert.ToChar(2) : Convert.ToChar(1);
                 Console.BackgroundColor = ConsoleColor.Black;
 
-                if (animal.Type == "Lion")
+                if (isLion)
                 {
                     Console.ForegroundColor = animal.Ate == true ? ConsoleColor.DarkRed : ConsoleColor.Red;
                     animal.Ate = false;
@@ -219,27 +220,33 @@
             {
                 animal.NextPosition = animal.CurrentPosition;
             }
-            else if (animal.Type == "Lion")
+            else if (animal.GetType() == typeof(Lion))
             {
-                var antelopesAround = closestAnimalList.FindAll(a => a.Type == "Antelope");
+                var antelopesAround = closestAnimalList.FindAll(a => a.GetType() == typeof(Antelope));
+                var convertedAntelopes = antelopesAround.Cast<Antelope>().ToList();
 
                 if (antelopesAround.Count != 0)
                 {
-                    var closestAntelope = GetClosestAnimal(antelopesAround, animal);
-                    NextLionAction(animal, closestAntelope, movePossibility);
+                    var closestAntelope = (Antelope)GetClosestAnimal(convertedAntelopes, animal);
+
+                    if(closestAntelope != null)
+                    {
+                        NextLionAction((Lion)animal, closestAntelope, movePossibility);
+                    }                    
                 }
                 else
                 {
                     animal.NextPosition = RandomMove(movePossibility);
                 }
             }
-            else if (animal.Type == "Antelope")
+            else if (animal.GetType() == typeof(Antelope))
             {
-                var lionsAround = closestAnimalList.FindAll(a => a.Type == "Lion");
+                var lionsAround = closestAnimalList.FindAll(a => a.GetType() == typeof(Lion));
+                var convertedLions = lionsAround.Cast<Lion>().ToList();
 
                 if (lionsAround.Count != 0)
                 {
-                    animal.NextPosition = MoveFromLions(movePossibility, lionsAround, animal);
+                    animal.NextPosition = MoveFromLions(movePossibility, convertedLions, (Antelope)animal);
                 }
                 else
                 {
@@ -323,7 +330,7 @@
         /// <param name="animalsAround">List with animals in the vision range.</param>
         /// <param name="currentAnimal">Animal whose nearest animal are to be found.</param>
         /// <returns>Nearest animal.</returns>
-        private Animal? GetClosestAnimal(List<Animal> animalsAround, Animal currentAnimal)
+        private Animal? GetClosestAnimal(List<Antelope> animalsAround, Animal currentAnimal)
         {
             double minDistance = currentAnimal.VisionRange * 2;
             int[] closestAnimalCoordinats = new int[2];
@@ -376,7 +383,7 @@
         /// <param name="lionToMove">Lion to make a move.</param>
         /// <param name="closestAntelope">Nearest antelope in vision range.</param>
         /// <param name="possibleSpacesToMove">List of possible places to make a move.</param>
-        private void NextLionAction(Animal lionToMove, Animal closestAntelope, List<int[]> possibleSpacesToMove)
+        private void NextLionAction(Lion lionToMove, Antelope closestAntelope, List<int[]> possibleSpacesToMove)
         {
             var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove);
 
@@ -400,7 +407,7 @@
         /// <param name="freeSpaceToMove">Possibilities for lion to move.</param>
         /// <param name="closestAntelope">Closest antelope to lion.</param>
         /// <returns>Coordinates for lion to make next move.</returns>
-        private int[] MoveCloserToAntelope(List<int[]> freeSpaceToMove, Animal closestAntelope)
+        private int[] MoveCloserToAntelope(List<int[]> freeSpaceToMove, Antelope closestAntelope)
         {
             double minDistance = 10;
             int[] closestMoveCoordinate = new int[2];
@@ -425,7 +432,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to make a move.</param>
         /// <returns>Coordinates for antelope to run from lions.</returns>
-        private int[] MoveFromLions(List<int[]> freeSpaceToMove, List<Animal> lionsInTheVisionRange, Animal antelope)
+        private int[] MoveFromLions(List<int[]> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {            
             double distanceMaxSum = 0;
             double distanceSum = 0;
@@ -459,7 +466,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to find distances.</param>
         /// <returns>List of arrays with distance points till lions on each free space for antelope to move.</returns>
-        private List<double[]> ReturnListOfDistancePoints(List<int[]> freeSpaceToMove, List<Animal> lionsInTheVisionRange, Animal antelope)
+        private List<double[]> ReturnListOfDistancePoints(List<int[]> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             var distances = new List<double[]>();
 
@@ -505,7 +512,7 @@
         /// </summary>
         /// <param name="lion">Lion.</param>
         /// <param name="antelope">Antelope near lion.</param>
-        private void LionEatAntelope(Animal lion, Animal antelope)
+        private void LionEatAntelope(Lion lion, Antelope antelope)
         {
             lion.NextPosition = antelope.CurrentPosition;
             lion.Ate = true;

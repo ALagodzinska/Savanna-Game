@@ -10,9 +10,8 @@
         /// </summary>
         public Lion()
         {
-            IsAlive = true;
             VisionRange = 1;
-            Type = "Lion";
+            IsAlive = true;            
         }
     }
 }

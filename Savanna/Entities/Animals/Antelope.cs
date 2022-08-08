@@ -10,7 +10,6 @@
         /// </summary>
         public Antelope()
         {
-            Type = "Antelope";
             IsAlive = true;
             VisionRange = 2;            
         }
