@@ -13,5 +13,10 @@
             VisionRange = 1;
             IsAlive = true;            
         }
+
+        /// <summary>
+        /// Used to understand if animal had eaten another animal.
+        /// </summary>
+        public bool Ate { get; set; }
     }
 }

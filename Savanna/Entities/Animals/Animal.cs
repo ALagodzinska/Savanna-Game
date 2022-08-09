@@ -23,11 +23,6 @@
         /// <summary>
         /// How many cells around the animal sees.
         /// </summary>
-        public int VisionRange { get; set; }
-
-        /// <summary>
-        /// Used to understand if animal had eaten another animal.
-        /// </summary>
-        public bool Ate { get; set; }
+        public int VisionRange { get; set; }        
     }
 }

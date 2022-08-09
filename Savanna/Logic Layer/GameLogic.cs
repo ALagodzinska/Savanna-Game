@@ -131,8 +131,9 @@
 
                 if (isLion)
                 {
-                    Console.ForegroundColor = animal.Ate == true ? ConsoleColor.DarkRed : ConsoleColor.Red;
-                    animal.Ate = false;
+                    var lion = (Lion)animal;
+                    Console.ForegroundColor = lion.Ate == true ? ConsoleColor.DarkRed : ConsoleColor.Red;
+                    lion.Ate = false;
                 }
                 else
                 {
