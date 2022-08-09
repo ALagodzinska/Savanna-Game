@@ -10,8 +10,8 @@
         /// </summary>
         public Lion()
         {
-            VisionRange = 1;
-            Health = 15;
+            VisionRange = 2;
+            Health = 30;
             IsAlive = true;            
         }
 

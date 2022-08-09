@@ -131,13 +131,18 @@
 
                 if (isLion)
                 {
-                    var lion = (Lion)animal;
-                    Console.ForegroundColor = lion.Ate == true ? ConsoleColor.DarkRed : ConsoleColor.Red;
+                    var lion = (Lion)animal;                    
+                    Console.ForegroundColor = lion.Ate == true ? ConsoleColor.Red : ConsoleColor.DarkYellow;
+                    //changes lion color when only 3 moves left
+                    if (lion.Health < 2)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
                     lion.Ate = false;
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = animal.Health < 2 == true ? ConsoleColor.DarkGray : ConsoleColor.White;
                 }
 
                 Console.Write(symbol);
@@ -215,6 +220,7 @@
             //Used to redraw field if in this iteration all animals died.
             if(animals.Count == 0)
             {
+                Thread.Sleep(1000);
                 gameField.DrawBorder();
             }
         }
@@ -528,6 +534,7 @@
         {
             lion.NextPosition = antelope.CurrentPosition;
             lion.Ate = true;
+            lion.Health += 10;
             antelope.IsAlive = false;
         }        
     }

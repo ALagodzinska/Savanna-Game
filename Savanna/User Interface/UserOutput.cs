@@ -23,7 +23,7 @@ PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU");
             Console.Write(" - ANTELOPE | ");
 
             Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write($"{Convert.ToChar(2)}");
             Console.ResetColor();
             Console.Write(" - LION");
