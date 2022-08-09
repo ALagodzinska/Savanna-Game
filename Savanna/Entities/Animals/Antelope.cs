@@ -11,6 +11,7 @@
         public Antelope()
         {
             IsAlive = true;
+            Health = 20;
             VisionRange = 2;            
         }
     }

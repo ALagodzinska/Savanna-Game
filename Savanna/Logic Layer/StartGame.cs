@@ -9,6 +9,9 @@
     {
         GameLogic gameLogic = new();
 
+        /// <summary>
+        /// Variable used to declare if a user exits an application.
+        /// </summary>
         bool exit = false;
 
         /// <summary>

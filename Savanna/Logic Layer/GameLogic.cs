@@ -203,9 +203,20 @@
                 animal.CurrentPosition = animal.NextPosition;
                 animal.NextPosition = null;
                 DrawAnimal(animal);
+                animal.Health -= 0.5;
+                if(animal.Health <= 0)
+                {
+                    animal.IsAlive = false;
+                }
             }
 
             animals.RemoveAll(a => a.IsAlive == false);
+
+            //Used to redraw field if in this iteration all animals died.
+            if(animals.Count == 0)
+            {
+                gameField.DrawBorder();
+            }
         }
 
         /// <summary>
