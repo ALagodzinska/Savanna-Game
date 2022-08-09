@@ -1,4 +1,5 @@
-﻿namespace Savanna
+﻿
+namespace Savanna
 {
     /// <summary>
     /// Class responsible for displaying information to user.
@@ -12,7 +13,8 @@
         {
             Console.Clear();
             Console.WriteLine(@$"THIS IS SAVANNA
-PRESS 'L' TO ADD A LION, PRESS 'A' TO ADD AN ANTELOPE TO GAME FIELD");
+PRESS 'L' TO ADD A LION, PRESS 'A' TO ADD AN ANTELOPE TO GAME FIELD
+PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU");
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;

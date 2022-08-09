@@ -7,7 +7,9 @@
     /// </summary>
     public class StartGame
     {
-        GameLogic gameLogic = new();        
+        GameLogic gameLogic = new();
+
+        bool exit = false;
 
         /// <summary>
         /// Starts game.
@@ -32,21 +34,25 @@
 \____/ \_| |_/ \___/ \_| |_/\_| \_/\_| \_/\_| |_/
                                                  
                                                  
-Welcome to the Savanna. What would ypu like to do?
+Welcome to the Savanna. What would you like to do?
 (Use the arrow to cycle through options and press enter to select an option.)" + "\n";
             string[] options = { "Play Game", "Exit Game" };
 
-            Menu mainMenu = new Menu(options, menuIntro);
-            var selectedIndex = mainMenu.SelectFromMenu();            
-
-            switch (selectedIndex)
+            while (!exit)
             {
-                case 0:                    
-                    gameLogic.PlayGame();
-                    break;
-                case 1:
-                    ExitGame();
-                    break;
+                Console.Clear();
+                Menu mainMenu = new Menu(options, menuIntro);
+                var selectedIndex = mainMenu.SelectFromMenu();
+
+                switch (selectedIndex)
+                {
+                    case 0:
+                        gameLogic.PlayGame();
+                        break;
+                    case 1:
+                        ExitGame();
+                        break;
+                }
             }
         }
 
@@ -57,6 +63,7 @@ Welcome to the Savanna. What would ypu like to do?
         {
             Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey(true);
+            exit = true;
             Environment.Exit(0);
         }
     }
