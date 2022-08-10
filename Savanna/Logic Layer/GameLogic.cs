@@ -243,7 +243,7 @@
                 var antelopesAround = closestAnimalList.FindAll(a => a.GetType() == typeof(Antelope));
                 var convertedAntelopes = antelopesAround.Cast<Antelope>().ToList();
 
-                if (antelopesAround.Count != 0)
+                if (convertedAntelopes.Count != 0)
                 {
                     var closestAntelope = (Antelope)GetClosestAntelope(convertedAntelopes, animal);
 
@@ -262,14 +262,7 @@
                 var lionsAround = closestAnimalList.FindAll(a => a.GetType() == typeof(Lion));
                 var convertedLions = lionsAround.Cast<Lion>().ToList();
 
-                if (lionsAround.Count != 0)
-                {
-                    animal.NextPosition = MoveFromLions(movePossibility, convertedLions, (Antelope)animal);
-                }
-                else
-                {
-                    animal.NextPosition = RandomMove(movePossibility);
-                }
+                animal.NextPosition = lionsAround.Count != 0 ? MoveFromLions(movePossibility, convertedLions, (Antelope)animal) : RandomMove(movePossibility);
             }
         }
 
