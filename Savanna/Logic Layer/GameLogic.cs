@@ -14,7 +14,11 @@
         /// <summary>
         /// List to store all animals in game.
         /// </summary>
-        private static List<Animal> animals = new();        
+        private static List<Animal> animals = new();
+
+        private static List<Couple> couples = new();
+
+        private static List<Animal> animalsToBeBorn = new();
 
         /// <summary>
         /// Method to start the game.
@@ -131,7 +135,7 @@
 
                 if (isLion)
                 {
-                    var lion = (Lion)animal;                    
+                    var lion = (Lion)animal;
                     Console.ForegroundColor = lion.Ate == true ? ConsoleColor.Red : ConsoleColor.DarkYellow;
                     //changes lion color when only 3 moves left
                     if (lion.Health < 2)
@@ -149,7 +153,7 @@
             }
 
             Console.ResetColor();
-        }        
+        }
 
         /// <summary>
         /// Check if place on a game field is taken by another animal.
@@ -198,10 +202,19 @@
         {
             foreach (var animal in animals)
             {
-                NextMoveForAnimals(animal);
+                NextPositionForAnimals(animal);
             }
 
-            gameField.DrawBorder();
+            //check if together for next iteration
+            CheckIfCouplesAreTogether();
+
+            //create couple if together in this and next iteration
+            foreach (var animal in animals)
+            {
+                CheckIfAnimalHaveCouple(animal);
+            }                     
+
+            gameField.DrawBorder();            
 
             foreach (var animal in animals)
             {
@@ -209,16 +222,27 @@
                 animal.NextPosition = null;
                 DrawAnimal(animal);
                 animal.Health -= 0.5;
-                if(animal.Health <= 0)
+                if (animal.Health <= 0)
                 {
                     animal.IsAlive = false;
                 }
             }
 
+            if (animalsToBeBorn.Count > 0)
+            {
+                foreach (var newborn in animalsToBeBorn)
+                {
+                    animals.Add(newborn);
+                    DrawAnimal(newborn);
+                }
+                animalsToBeBorn.Clear();
+            }
+
             animals.RemoveAll(a => a.IsAlive == false);
+            couples.RemoveAll(c => c.BrokeUp == true);
 
             //Used to redraw field if in this iteration all animals died.
-            if(animals.Count == 0)
+            if (animals.Count == 0)
             {
                 Thread.Sleep(1000);
                 gameField.DrawBorder();
@@ -229,7 +253,7 @@
         /// Based on animal type and location decides where next move should be done.
         /// </summary>
         /// <param name="animal">Animal to make a move.</param>
-        private void NextMoveForAnimals(Animal animal)
+        private void NextPositionForAnimals(Animal animal)
         {
             var closestAnimalList = AnimalsInVisionRange(animal);
             var movePossibility = PossibleMoves(animal);
@@ -247,10 +271,10 @@
                 {
                     var closestAntelope = (Antelope)GetClosestAntelope(convertedAntelopes, animal);
 
-                    if(closestAntelope != null)
+                    if (closestAntelope != null)
                     {
                         NextLionAction((Lion)animal, closestAntelope, movePossibility);
-                    }                    
+                    }
                 }
                 else
                 {
@@ -348,7 +372,7 @@
 
             foreach (var animal in animalsAround)
             {
-                var distance = FindDistanceBetweenTwoCoordinates(animal.CurrentPosition, currentAnimal);
+                var distance = FindDistanceBetweenTwoCoordinates(animal.CurrentPosition, currentAnimal.CurrentPosition);
 
                 if (distance < minDistance)
                 {
@@ -358,7 +382,7 @@
             }
 
             return animals.FirstOrDefault(a => a.CurrentPosition == closestAnimalCoordinats);
-        }        
+        }
 
         /// <summary>
         /// Make a random move on a game field.
@@ -379,10 +403,10 @@
         /// <param name="animalCoordinates">Animal coordinates to which we are looking for distance.</param>
         /// <param name="currentAnimal">Animal from which we are looking for distance.</param>
         /// <returns>Return distance value between two coordinates.</returns>
-        private double FindDistanceBetweenTwoCoordinates(int[] animalCoordinates, Animal currentAnimal)
+        private double FindDistanceBetweenTwoCoordinates(int[] animalCoordinates, int[] currentAnimalCoordinates)
         {
-            var widthDifference = animalCoordinates[0] - currentAnimal.CurrentPosition[0];
-            var heightDifference = animalCoordinates[1] - currentAnimal.CurrentPosition[1];
+            var widthDifference = animalCoordinates[0] - currentAnimalCoordinates[0];
+            var heightDifference = animalCoordinates[1] - currentAnimalCoordinates[1];
             var distance = Math.Sqrt((widthDifference * widthDifference) + (heightDifference * heightDifference));
 
             return distance;
@@ -396,7 +420,7 @@
         /// <param name="possibleSpacesToMove">List of possible places to make a move.</param>
         private void NextLionAction(Lion lionToMove, Antelope closestAntelope, List<int[]> possibleSpacesToMove)
         {
-            var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove);
+            var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove.CurrentPosition);
 
             if (distance == 1 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
             {
@@ -410,7 +434,7 @@
             {
                 lionToMove.NextPosition = MoveCloserToAntelope(possibleSpacesToMove, closestAntelope);
             }
-        }                
+        }
 
         /// <summary>
         /// To choose lion closest place to catch nearest antelope.
@@ -425,7 +449,7 @@
 
             foreach (var space in freeSpaceToMove)
             {
-                var distance = FindDistanceBetweenTwoCoordinates(space, closestAntelope);
+                var distance = FindDistanceBetweenTwoCoordinates(space, closestAntelope.CurrentPosition);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -444,7 +468,7 @@
         /// <param name="antelope">Antelope to make a move.</param>
         /// <returns>Coordinates for antelope to run from lions.</returns>
         private int[] MoveFromLions(List<int[]> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
-        {            
+        {
             double distanceMaxSum = 0;
             double distanceSum = 0;
             int[] maxDistance = new int[2];
@@ -483,12 +507,12 @@
 
             for (int l = 0; l < lionsInTheVisionRange.Count; l++)
             {
-                var previousDistance = FindDistanceBetweenTwoCoordinates(lionsInTheVisionRange[l].CurrentPosition, antelope);
+                var previousDistance = FindDistanceBetweenTwoCoordinates(lionsInTheVisionRange[l].CurrentPosition, antelope.CurrentPosition);
                 double[] distancesUntilLions = new double[freeSpaceToMove.Count];
 
                 for (int i = 0; i < freeSpaceToMove.Count; i++)
                 {
-                    var currentDistance = FindDistanceBetweenTwoCoordinates(freeSpaceToMove[i], lionsInTheVisionRange[l]);
+                    var currentDistance = FindDistanceBetweenTwoCoordinates(freeSpaceToMove[i], lionsInTheVisionRange[l].CurrentPosition);
 
                     if (currentDistance <= previousDistance)
                     {
@@ -529,6 +553,163 @@
             lion.Ate = true;
             lion.Health += 10;
             antelope.IsAlive = false;
-        }        
+        }
+
+        private void CheckIfAnimalHaveCouple(Animal mainAnimal)
+        {
+            var listWithCloseAnimalsOneType = ClosestAnimalsWithSameType(mainAnimal);
+            if (listWithCloseAnimalsOneType.Count > 0)
+            {
+                foreach (var animal in listWithCloseAnimalsOneType)
+                {
+                    var couple = new Couple(mainAnimal, animal);
+
+                    if (couples.FirstOrDefault(c => c.AnimalWithLargestID == couple.AnimalWithLargestID 
+                    && c.AnimalWithSmallestID == couple.AnimalWithSmallestID) == null)
+                    {
+                        var distanceOnNextMove = FindDistanceBetweenTwoCoordinates(animal.NextPosition, mainAnimal.NextPosition);
+
+                        if (distanceOnNextMove == 1 && mainAnimal.IsAlive == true && animal.IsAlive == true)
+                        {
+                            couples.Add(couple);
+                        }
+                    }                    
+                }
+            }
+        }
+
+        private void CheckIfCouplesAreTogether()
+        {
+            if(couples.Count > 0)
+            {
+                foreach(var couple in couples)
+                {
+                    var distanceOnMove = FindDistanceBetweenTwoCoordinates(couple.AnimalWithLargestID.CurrentPosition, couple.AnimalWithSmallestID.CurrentPosition);
+                    if(distanceOnMove == 1)
+                    {
+                        couple.RoundsTogether++;
+                        if(couple.RoundsTogether == 3)
+                        {
+                            AnimalToBeBorn(couple);
+                            couple.BrokeUp = true;
+                        }
+                    }
+                    else
+                    {
+                        couple.BrokeUp = true;
+                    }
+                }
+            }            
+        }
+
+        private List<Animal> ClosestAnimalsWithSameType(Animal animal)
+        {
+            int[] coordinates = new int[2];
+            List<Animal> closestAnimalList = new List<Animal>();
+
+            for (int h = animal.CurrentPosition[1] - 1; h <= animal.CurrentPosition[1] + 1; h++)
+            {
+                for (int w = animal.CurrentPosition[0] - 1; w <= animal.CurrentPosition[0] + 1; w++)
+                {
+                    coordinates[0] = w;
+                    coordinates[1] = h;
+
+                    var distance = FindDistanceBetweenTwoCoordinates(coordinates, animal.CurrentPosition);
+
+                    if (h > gameField.Height || h < 0
+                        || w > gameField.Width || w < 0
+                        || h == animal.CurrentPosition[1] && w == animal.CurrentPosition[0]
+                        || distance > 1)
+                    {
+                        continue;
+                    }
+
+                    var foundAnimal = GetAnimalByCurrentCoordinates(coordinates);
+
+                    if (foundAnimal != null && foundAnimal.GetType() == animal.GetType())
+                    {
+                        closestAnimalList.Add(foundAnimal);
+                    }
+                }
+            }
+
+            return closestAnimalList;
+        }
+
+        //private Animal[] CreateCouple(Animal animal, Animal sameTypeAnimal)
+        //{
+        //    var couple = new Animal[2];
+
+        //    if (animal.ID > sameTypeAnimal.ID)
+        //    {
+        //        couple[0] = animal;
+        //        couple[1] = sameTypeAnimal;
+        //    }
+        //    else
+        //    {
+        //        couple[0] = sameTypeAnimal;
+        //        couple[1] = animal;
+        //    }
+
+        //    return couple;
+        //}
+
+        private void AnimalToBeBorn(Couple couple)
+        {
+            //return animal to be born 
+            var bornAnimalCoordinates = GetPlaceToBorn(couple.AnimalWithLargestID, couple.AnimalWithSmallestID);
+
+            if (couple.AnimalWithSmallestID.GetType() == typeof(Lion))
+            {
+                var createdLion = new Lion();
+                createdLion.CurrentPosition = bornAnimalCoordinates;
+                animalsToBeBorn.Add(createdLion);
+            }
+            else
+            {
+                var createdAntelope = new Antelope();
+                createdAntelope.CurrentPosition = bornAnimalCoordinates;
+                animalsToBeBorn.Add(createdAntelope);
+            }
+        }
+
+        private List<int[]> GetListWithUniqueCoordinates(List<int[]> list1, List<int[]> list2)
+        {
+            for (int i = 0; i < list1.Count; i++)
+            {
+                for (int j = 0; j < list2.Count; j++)
+                {
+                    if (list1[i][0] == list2[j][0] && list1[i][1] == list2[j][1])
+                    {
+                        list2.Remove(list2[j]);
+                    }
+                }
+            }
+            var list = list1.Concat(list2).ToList();
+
+            return list;
+        }
+
+        private int[] GetPlaceToBorn(Animal mainAnimal, Animal sameTypeAnimalNear)
+        {
+            var animalMoves = PossibleMoves(mainAnimal);
+            var sameAnimalTypeMoves = PossibleMoves(sameTypeAnimalNear);
+
+            var listWithFreeSpaces = GetListWithUniqueCoordinates(animalMoves, sameAnimalTypeMoves);
+
+            foreach (var move in listWithFreeSpaces)
+            {
+                if (CheckIfPlaceWillBeTakenInNextStep(move))
+                {
+                    listWithFreeSpaces.Remove(move);
+                }
+            }
+
+            Random random = new Random();
+
+            var placeToBornIndex = random.Next(0, listWithFreeSpaces.Count);
+
+            return listWithFreeSpaces[placeToBornIndex];
+        }
     }
 }
