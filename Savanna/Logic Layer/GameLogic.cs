@@ -1,7 +1,7 @@
 ﻿namespace Savanna
 {
-    using Savanna.Entities;
     using Savanna.Entities.Animals;
+    using Savanna.Entities.GameField;
     using Savanna.Entities.Menu;
 
     /// <summary>

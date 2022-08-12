@@ -1,4 +1,6 @@
 ﻿using Savanna.Entities.Menu;
+using System.Resources;
+using System.Reflection;
 
 namespace Savanna
 {
@@ -7,15 +9,14 @@ namespace Savanna
     /// </summary>
     public class UserOutput
     {
+        ResourceManager resourceManager = new ResourceManager("Savanna.Resources.ResourceFile", Assembly.GetExecutingAssembly());
         /// <summary>
         /// Displays game rules to a user.
         /// </summary>
         public void DisplayGameRules()
         {
             Console.Clear();
-            Console.WriteLine(@$"THIS IS SAVANNA
-PRESS 'L' TO ADD A LION, PRESS 'A' TO ADD AN ANTELOPE TO GAME FIELD
-PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU");
+            Console.WriteLine(resourceManager.GetString("GameRules"));
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
@@ -32,17 +33,7 @@ PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU");
 
         public Menu<MainMenuOptions> MainMenu()
         {
-            var menuIntro = @"
- _____   ___   _   _   ___   _   _  _   _   ___  
-/  ___| / _ \ | | | | / _ \ | \ | || \ | | / _ \ 
-\ `--. / /_\ \| | | |/ /_\ \|  \| ||  \| |/ /_\ \
- `--. \|  _  || | | ||  _  || . ` || . ` ||  _  |
-/\__/ /| | | |\ \_/ /| | | || |\  || |\  || | | |
-\____/ \_| |_/ \___/ \_| |_/\_| \_/\_| \_/\_| |_/
-                                                 
-                                                 
-Welcome to the Savanna. What would you like to do?
-(Use the arrow to cycle through options and press enter to select an option.)" + "\n";
+            var menuIntro = resourceManager.GetString("MainMenuIntro"); ;
 
             var options = MenuOption<MainMenuOptions>.CreateMainMenuOptions();
             Menu<MainMenuOptions> mainMenu = new Menu<MainMenuOptions>(options, menuIntro);

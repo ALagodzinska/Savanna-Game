@@ -1,4 +1,4 @@
-﻿namespace Savanna.Entities
+﻿namespace Savanna.Entities.GameField
 {
     /// <summary>
     /// Stores data about game field and method to draw game border.
@@ -13,7 +13,7 @@
             Height = 25;
             Width = 50;
             TopPosition = 5;
-            BorderColor = ConsoleColor.DarkGreen;            
+            BorderColor = ConsoleColor.DarkGreen;
         }
 
         /// <summary>
