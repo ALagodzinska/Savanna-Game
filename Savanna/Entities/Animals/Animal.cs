@@ -1,4 +1,6 @@
-﻿namespace Savanna.Entities.Animals
+﻿using Savanna.Entities.GameField;
+
+namespace Savanna.Entities.Animals
 {
     /// <summary>
     /// Base class for all animals with main properties.
@@ -21,12 +23,12 @@
         /// <summary>
         /// Stores two coordinates for current animal position. [0] is width coordinate. [1] is height coordinate.
         /// </summary>
-        public int[]? CurrentPosition { get; set; }
+        public Coordinates CurrentPosition { get; set; }
 
         /// <summary>
         /// Stores two coordinates for next animal position. [0] is width coordinate. [1] is height coordinate.
         /// </summary>
-        public int[]? NextPosition { get; set; }
+        public Coordinates NextPosition { get; set; }
 
         public double Health { get; set; }
 

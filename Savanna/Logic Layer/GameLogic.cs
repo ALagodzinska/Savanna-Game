@@ -151,7 +151,7 @@
             Random random = new Random();
             var randomWidthPosition = random.Next(0, gameField.Width - 1);
             var randomHeightPosition = random.Next(0, gameField.Height - 1);
-            int[] coordinates = new int[2] { randomWidthPosition, randomHeightPosition };
+            Coordinates coordinates = new Coordinates { X = randomWidthPosition, Y = randomHeightPosition };
 
             if (!CheckIfPlaceIsTaken(coordinates))
             {
@@ -167,7 +167,7 @@
         {
             if (animal.IsAlive == true)
             {
-                Console.SetCursorPosition(animal.CurrentPosition[0] + 1, animal.CurrentPosition[1] + gameField.TopPosition + 1);
+                Console.SetCursorPosition(animal.CurrentPosition.X + 1, animal.CurrentPosition.Y + gameField.TopPosition + 1);
                 var isLion = animal.GetType() == typeof(Lion);
 
                 var symbol = isLion ? Convert.ToChar(2) : Convert.ToChar(1);
@@ -200,7 +200,7 @@
         /// </summary>
         /// <param name="coordinates">Coordinates to place an animal.</param>
         /// <returns>True if place is taken, false if it is free.</returns>
-        private bool CheckIfPlaceIsTaken(int[] coordinates)
+        private bool CheckIfPlaceIsTaken(Coordinates coordinates)
         {
             var foundAnimal = GetAnimalByCurrentCoordinates(coordinates);
 
@@ -212,11 +212,11 @@
         /// </summary>
         /// <param name="coordinates">Animal current position.</param>
         /// <returns>Animal.</returns>
-        private Animal? GetAnimalByCurrentCoordinates(int[] coordinates)
+        private Animal? GetAnimalByCurrentCoordinates(Coordinates coordinates)
         {
             var animal = animals.Where(a => a.IsAlive == true).FirstOrDefault(a => a.CurrentPosition != null
-            && a.CurrentPosition[0] == coordinates[0]
-            && a.CurrentPosition[1] == coordinates[1]);
+            && a.CurrentPosition.X == coordinates.X
+            && a.CurrentPosition.Y == coordinates.Y);
 
             return animal;
         }
@@ -226,11 +226,11 @@
         /// </summary>
         /// <param name="coordinates">Coordinates to place an animal.</param>
         /// <returns>True if place is taken, false if it is free.</returns>
-        private bool CheckIfPlaceWillBeTakenInNextStep(int[] coordinates)
+        private bool CheckIfPlaceWillBeTakenInNextStep(Coordinates coordinates)
         {
             var foundAnimal = animals.FirstOrDefault(a => a.NextPosition != null
-            && a.NextPosition[0] == coordinates[0]
-            && a.NextPosition[1] == coordinates[1]);
+            && a.NextPosition.X == coordinates.X
+            && a.NextPosition.Y == coordinates.Y);
 
             return foundAnimal != null ? true : false;
         }
@@ -335,22 +335,22 @@
         /// <returns>Returns list of animals that are in a vison range of one animal.</returns>
         private List<Animal> AnimalsInVisionRange(Animal animal)
         {
-            int[] coordinates = new int[2];
+            Coordinates coordinates = new();
             List<Animal> closestAnimalList = new List<Animal>();
 
-            for (int h = animal.CurrentPosition[1] - animal.VisionRange; h <= animal.CurrentPosition[1] + animal.VisionRange; h++)
+            for (int h = animal.CurrentPosition.Y - animal.VisionRange; h <= animal.CurrentPosition.Y + animal.VisionRange; h++)
             {
-                for (int w = animal.CurrentPosition[0] - animal.VisionRange; w <= animal.CurrentPosition[0] + animal.VisionRange; w++)
+                for (int w = animal.CurrentPosition.X - animal.VisionRange; w <= animal.CurrentPosition.X + animal.VisionRange; w++)
                 {
                     if (h > gameField.Height || h < 0
                         || w > gameField.Width || w < 0
-                        || h == animal.CurrentPosition[1] && w == animal.CurrentPosition[0])
+                        || h == animal.CurrentPosition.Y && w == animal.CurrentPosition.X)
                     {
                         continue;
                     }
 
-                    coordinates[0] = w;
-                    coordinates[1] = h;
+                    coordinates.X = w;
+                    coordinates.Y = h;
 
                     var foundAnimal = GetAnimalByCurrentCoordinates(coordinates);
 
@@ -371,19 +371,19 @@
         /// </summary>
         /// <param name="animal">One animal.</param>
         /// <returns>Return list with coordinates with free spaces to move.</returns>
-        private List<int[]> PossibleMoves(Animal animal)
+        private List<Coordinates> PossibleMoves(Animal animal)
         {
-            List<int[]> moves = new List<int[]>();
+            List<Coordinates> moves = new();
 
-            for (int h = animal.CurrentPosition[1] - 1; h < animal.CurrentPosition[1] + 2; h++)
+            for (int h = animal.CurrentPosition.Y - 1; h < animal.CurrentPosition.Y + 2; h++)
             {
-                for (int w = animal.CurrentPosition[0] - 1; w < animal.CurrentPosition[0] + 2; w++)
+                for (int w = animal.CurrentPosition.X - 1; w < animal.CurrentPosition.X + 2; w++)
                 {
-                    int[] foundCoordinates = { w, h };
+                    Coordinates foundCoordinates = new(){ X = w, Y = h };
 
                     if (h >= gameField.Height || h < 0
                         || w >= gameField.Width || w < 0
-                        || h == animal.CurrentPosition[1] && w == animal.CurrentPosition[0]
+                        || h == animal.CurrentPosition.Y && w == animal.CurrentPosition.X
                         || CheckIfPlaceIsTaken(foundCoordinates)
                         || CheckIfPlaceWillBeTakenInNextStep(foundCoordinates))
                     {
@@ -406,7 +406,7 @@
         private Animal? GetClosestAntelope(List<Antelope> animalsAround, Animal currentAnimal)
         {
             double minDistance = currentAnimal.VisionRange * 2;
-            int[] closestAnimalCoordinats = new int[2];
+            Coordinates closestAnimalCoordinats = new();
 
             foreach (var animal in animalsAround)
             {
@@ -427,7 +427,7 @@
         /// </summary>
         /// <param name="moves">List with available places to move for an animal.</param>
         /// <returns>Coordinates for next move.</returns>
-        private int[] RandomMove(List<int[]> moves)
+        private Coordinates RandomMove(List<Coordinates> moves)
         {
             Random random = new Random();
             var moveIndex = random.Next(moves.Count);
@@ -441,10 +441,10 @@
         /// <param name="animalCoordinates">Animal coordinates to which we are looking for distance.</param>
         /// <param name="currentAnimal">Animal from which we are looking for distance.</param>
         /// <returns>Return distance value between two coordinates.</returns>
-        private double FindDistanceBetweenTwoCoordinates(int[] animalCoordinates, int[] currentAnimalCoordinates)
+        private double FindDistanceBetweenTwoCoordinates(Coordinates animalCoordinates, Coordinates currentAnimalCoordinates)
         {
-            var widthDifference = animalCoordinates[0] - currentAnimalCoordinates[0];
-            var heightDifference = animalCoordinates[1] - currentAnimalCoordinates[1];
+            var widthDifference = animalCoordinates.X - currentAnimalCoordinates.X;
+            var heightDifference = animalCoordinates.Y - currentAnimalCoordinates.Y;
             var distance = Math.Sqrt((widthDifference * widthDifference) + (heightDifference * heightDifference));
 
             return distance;
@@ -456,7 +456,7 @@
         /// <param name="lionToMove">Lion to make a move.</param>
         /// <param name="closestAntelope">Nearest antelope in vision range.</param>
         /// <param name="possibleSpacesToMove">List of possible places to make a move.</param>
-        private void NextLionAction(Lion lionToMove, Antelope closestAntelope, List<int[]> possibleSpacesToMove)
+        private void NextLionAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove)
         {
             var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove.CurrentPosition);
 
@@ -480,10 +480,10 @@
         /// <param name="freeSpaceToMove">Possibilities for lion to move.</param>
         /// <param name="closestAntelope">Closest antelope to lion.</param>
         /// <returns>Coordinates for lion to make next move.</returns>
-        private int[] MoveCloserToAntelope(List<int[]> freeSpaceToMove, Antelope closestAntelope)
+        private Coordinates MoveCloserToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope)
         {
             double minDistance = 10;
-            int[] closestMoveCoordinate = new int[2];
+            Coordinates closestMoveCoordinate = new();
 
             foreach (var space in freeSpaceToMove)
             {
@@ -505,11 +505,11 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to make a move.</param>
         /// <returns>Coordinates for antelope to run from lions.</returns>
-        private int[] MoveFromLions(List<int[]> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
+        private Coordinates MoveFromLions(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             double distanceMaxSum = 0;
             double distanceSum = 0;
-            int[] maxDistance = new int[2];
+            Coordinates maxDistance = new();
 
             var distances = ReturnListOfDistancePoints(freeSpaceToMove, lionsInTheVisionRange, antelope);
 
@@ -539,7 +539,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to find distances.</param>
         /// <returns>List of arrays with distance points till lions on each free space for antelope to move.</returns>
-        private List<double[]> ReturnListOfDistancePoints(List<int[]> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
+        private List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             var distances = new List<double[]>();
 
@@ -642,21 +642,21 @@
 
         private List<Animal> ClosestAnimalsWithSameType(Animal animal)
         {
-            int[] coordinates = new int[2];
+            Coordinates coordinates = new Coordinates();
             List<Animal> closestAnimalList = new List<Animal>();
 
-            for (int h = animal.CurrentPosition[1] - 1; h <= animal.CurrentPosition[1] + 1; h++)
+            for (int h = animal.CurrentPosition.Y - 1; h <= animal.CurrentPosition.Y + 1; h++)
             {
-                for (int w = animal.CurrentPosition[0] - 1; w <= animal.CurrentPosition[0] + 1; w++)
+                for (int w = animal.CurrentPosition.X - 1; w <= animal.CurrentPosition.X + 1; w++)
                 {
-                    coordinates[0] = w;
-                    coordinates[1] = h;
+                    coordinates.X = w;
+                    coordinates.Y = h;
 
                     var distance = FindDistanceBetweenTwoCoordinates(coordinates, animal.CurrentPosition);
 
                     if (h > gameField.Height || h < 0
                         || w > gameField.Width || w < 0
-                        || h == animal.CurrentPosition[1] && w == animal.CurrentPosition[0]
+                        || h == animal.CurrentPosition.Y && w == animal.CurrentPosition.X
                         || distance > 1)
                     {
                         continue;
@@ -693,24 +693,25 @@
             }
         }
 
-        private List<int[]> GetListWithUniqueCoordinates(List<int[]> list1, List<int[]> list2)
+        private List<Coordinates> GetListWithUniqueCoordinates(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
         {
-            for (int i = 0; i < list1.Count; i++)
+            for (int i = 0; i < spacesAroundFirstParent.Count; i++)
             {
-                for (int j = 0; j < list2.Count; j++)
+                for (int j = 0; j < spacesAroundSecondParent.Count; j++)
                 {
-                    if (list1[i][0] == list2[j][0] && list1[i][1] == list2[j][1])
+                    if (spacesAroundFirstParent[i].X == spacesAroundSecondParent[j].X 
+                        && spacesAroundFirstParent[i].Y == spacesAroundSecondParent[j].Y)
                     {
-                        list2.Remove(list2[j]);
+                        spacesAroundSecondParent.Remove(spacesAroundSecondParent[j]);
                     }
                 }
             }
-            var list = list1.Concat(list2).ToList();
+            var list = spacesAroundFirstParent.Concat(spacesAroundSecondParent).ToList();
 
             return list;
         }
 
-        private int[] GetPlaceToBorn(Animal mainAnimal, Animal sameTypeAnimalNear)
+        private Coordinates GetPlaceToBorn(Animal mainAnimal, Animal sameTypeAnimalNear)
         {
             var animalMoves = PossibleMoves(mainAnimal);
             var sameAnimalTypeMoves = PossibleMoves(sameTypeAnimalNear);
