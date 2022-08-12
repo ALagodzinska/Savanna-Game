@@ -264,12 +264,11 @@
             }
             else if (animal.GetType() == typeof(Lion))
             {
-                var antelopesAround = closestAnimalList.FindAll(a => a.GetType() == typeof(Antelope));
-                var convertedAntelopes = antelopesAround.Cast<Antelope>().ToList();
+                var antelopes = closestAnimalList.OfType<Antelope>().ToList();
 
-                if (convertedAntelopes.Count != 0)
+                if (antelopes.Count != 0)
                 {
-                    var closestAntelope = (Antelope)GetClosestAntelope(convertedAntelopes, animal);
+                    var closestAntelope = (Antelope)GetClosestAntelope(antelopes, animal);
 
                     if (closestAntelope != null)
                     {
@@ -283,10 +282,9 @@
             }
             else if (animal.GetType() == typeof(Antelope))
             {
-                var lionsAround = closestAnimalList.FindAll(a => a.GetType() == typeof(Lion));
-                var convertedLions = lionsAround.Cast<Lion>().ToList();
+                var lions = closestAnimalList.OfType<Lion>().ToList();
 
-                animal.NextPosition = lionsAround.Count != 0 ? MoveFromLions(movePossibility, convertedLions, (Antelope)animal) : RandomMove(movePossibility);
+                animal.NextPosition = lions.Count != 0 ? MoveFromLions(movePossibility, lions, (Antelope)animal) : RandomMove(movePossibility);
             }
         }
 
@@ -635,24 +633,6 @@
 
             return closestAnimalList;
         }
-
-        //private Animal[] CreateCouple(Animal animal, Animal sameTypeAnimal)
-        //{
-        //    var couple = new Animal[2];
-
-        //    if (animal.ID > sameTypeAnimal.ID)
-        //    {
-        //        couple[0] = animal;
-        //        couple[1] = sameTypeAnimal;
-        //    }
-        //    else
-        //    {
-        //        couple[0] = sameTypeAnimal;
-        //        couple[1] = animal;
-        //    }
-
-        //    return couple;
-        //}
 
         private void AnimalToBeBorn(Couple couple)
         {
