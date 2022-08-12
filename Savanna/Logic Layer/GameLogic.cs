@@ -2,6 +2,7 @@
 {
     using Savanna.Entities;
     using Savanna.Entities.Animals;
+    using Savanna.Entities.Menu;
 
     /// <summary>
     /// Contain methods that apply game rules and logic.
@@ -19,6 +20,45 @@
         private static List<Couple> couples = new();
 
         private static List<Animal> animalsToBeBorn = new();
+
+        /// <summary>
+        /// Variable used to declare if a user exits an application.
+        /// </summary>
+        bool exit = false;
+
+        /// <summary>
+        /// Starts game.
+        /// </summary>
+        public void Start()
+        {
+            Console.Title = "SAVANNA GAME";
+            RunMainMenu();
+        }
+
+        /// <summary>
+        /// Display main menu.
+        /// </summary>
+        private void RunMainMenu()
+        {            
+
+            while (!exit)
+            {
+                Console.Clear();
+
+                var mainMenu = userOutput.MainMenu();
+                var selectedOption = mainMenu.SelectFromMenu();
+
+                switch (selectedOption.Index)
+                {
+                    case MainMenuOptions.PlayGame:
+                        PlayGame();
+                        break;
+                    case MainMenuOptions.ExitGame:
+                        ExitGame();
+                        break;
+                }
+            }
+        }
 
         /// <summary>
         /// Method to start the game.
@@ -690,6 +730,17 @@
             var placeToBornIndex = random.Next(0, listWithFreeSpaces.Count);
 
             return listWithFreeSpaces[placeToBornIndex];
+        }
+
+        /// <summary>
+        /// Exits the game.
+        /// </summary>
+        private void ExitGame()
+        {
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey(true);
+            exit = true;
+            Environment.Exit(0);
         }
     }
 }

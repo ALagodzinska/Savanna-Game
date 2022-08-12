@@ -1,4 +1,5 @@
-﻿
+﻿using Savanna.Entities.Menu;
+
 namespace Savanna
 {
     /// <summary>
@@ -27,6 +28,26 @@ PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU");
             Console.Write($"{Convert.ToChar(2)}");
             Console.ResetColor();
             Console.Write(" - LION");
+        }
+
+        public Menu<MainMenuOptions> MainMenu()
+        {
+            var menuIntro = @"
+ _____   ___   _   _   ___   _   _  _   _   ___  
+/  ___| / _ \ | | | | / _ \ | \ | || \ | | / _ \ 
+\ `--. / /_\ \| | | |/ /_\ \|  \| ||  \| |/ /_\ \
+ `--. \|  _  || | | ||  _  || . ` || . ` ||  _  |
+/\__/ /| | | |\ \_/ /| | | || |\  || |\  || | | |
+\____/ \_| |_/ \___/ \_| |_/\_| \_/\_| \_/\_| |_/
+                                                 
+                                                 
+Welcome to the Savanna. What would you like to do?
+(Use the arrow to cycle through options and press enter to select an option.)" + "\n";
+
+            var options = MenuOption<MainMenuOptions>.CreateMainMenuOptions();
+            Menu<MainMenuOptions> mainMenu = new Menu<MainMenuOptions>(options, menuIntro);
+
+            return mainMenu;
         }
     }
 }

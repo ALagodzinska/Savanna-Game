@@ -1,16 +1,16 @@
-﻿namespace Savanna.Entities
+﻿namespace Savanna.Entities.Menu
 {
     /// <summary>
     /// Used for creating and displaying menu to user.
     /// </summary>
-    public class Menu
+    public class Menu<T>
     {
         /// <summary>
         /// Set initial values for menu fields.
         /// </summary>
         /// <param name="options">Menu options to choose from.</param>
         /// <param name="menuIntro">Title and menu control rules.</param>
-        public Menu(string[] options, string menuIntro)
+        public Menu(MenuOption<T>[] options, string menuIntro)
         {
             SelectedOptionIndex = 0;
             Options = options;
@@ -25,7 +25,7 @@
         /// <summary>
         /// Menu options to choose from.
         /// </summary>
-        private string[] Options;
+        private MenuOption<T>[] Options;
 
         /// <summary>
         /// Title and menu control rules.
@@ -41,7 +41,7 @@
             for (int i = 0; i < Options.Length; i++)
             {
                 bool isSelected = i == SelectedOptionIndex;
-                OptionStyle(isSelected, Options[i]);
+                OptionStyle(isSelected, Options[i].Title);
             }
 
             Console.ResetColor();
@@ -65,7 +65,7 @@
         /// Allows to select an option from the menu.
         /// </summary>
         /// <returns>Selected option index.</returns>
-        public int SelectFromMenu()
+        public MenuOption<T> SelectFromMenu()
         {
             ConsoleKey keyPressed;
             do
@@ -79,7 +79,7 @@
                 if (keyPressed == ConsoleKey.UpArrow)
                 {
                     SelectedOptionIndex--;
-                    
+
                     if (SelectedOptionIndex == -1)
                     {
                         //move to the last option
@@ -89,7 +89,7 @@
                 else if (keyPressed == ConsoleKey.DownArrow)
                 {
                     SelectedOptionIndex++;
-                    
+
                     if (SelectedOptionIndex == Options.Length)
                     {
                         //move to first option
@@ -99,7 +99,7 @@
 
             } while (keyPressed != ConsoleKey.Enter);
 
-            return SelectedOptionIndex;
+            return Options[SelectedOptionIndex];
         }
     }
 }
