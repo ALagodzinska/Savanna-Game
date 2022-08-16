@@ -12,20 +12,20 @@
         /// <param name="menuIntro">Title and menu control rules.</param>
         public Menu(MenuOption<T>[] options, string menuIntro)
         {
-            SelectedOptionIndex = 0;
             Options = options;
+            SelectedOptionIndex = 0;
             MenuIntro = menuIntro;
         }
+
+        /// <summary>
+        /// Menu options to choose from.
+        /// </summary>
+        protected MenuOption<T>[] Options;
 
         /// <summary>
         /// Index value of selected option.
         /// </summary>
         private int SelectedOptionIndex;
-
-        /// <summary>
-        /// Menu options to choose from.
-        /// </summary>
-        private MenuOption<T>[] Options;
 
         /// <summary>
         /// Title and menu control rules.
@@ -50,14 +50,14 @@
         /// <summary>
         /// By parameters selects how to display the option in the menu.
         /// </summary>
-        /// <param name="isSelelcted">Used to understand if this menu option is selected by a user or not.</param>
+        /// <param name="isSelected">Used to understand if this menu option is selected by a user or not.</param>
         /// <param name="currentOption">One option to display.</param>
-        private void OptionStyle(bool isSelelcted, string currentOption)
+        private void OptionStyle(bool isSelected, string currentOption)
         {
-            string sideSymbol = isSelelcted ? Convert.ToChar(3).ToString() : Convert.ToChar(4).ToString();
-            string prefix = isSelelcted ? Convert.ToChar(16).ToString() : " ";
-            Console.BackgroundColor = isSelelcted ? ConsoleColor.Green : ConsoleColor.Black;
-            Console.ForegroundColor = isSelelcted ? ConsoleColor.Black : ConsoleColor.White;
+            string sideSymbol = isSelected ? Convert.ToChar(3).ToString() : Convert.ToChar(4).ToString();
+            string prefix = isSelected ? Convert.ToChar(16).ToString() : " ";
+            Console.BackgroundColor = isSelected ? ConsoleColor.Green : ConsoleColor.Black;
+            Console.ForegroundColor = isSelected ? ConsoleColor.Black : ConsoleColor.White;
             Console.WriteLine($"{prefix} {sideSymbol} {currentOption} {sideSymbol}");
         }
 

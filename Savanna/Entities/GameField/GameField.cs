@@ -1,21 +1,13 @@
-﻿namespace Savanna.Entities.GameField
+﻿using Savanna.Entities.Animals;
+using Savanna.Logic_Layer;
+
+namespace Savanna.Entities.GameField
 {
     /// <summary>
     /// Stores data about game field and method to draw game border.
     /// </summary>
     public class GameField
     {
-        /// <summary>
-        /// Creates new game field with assigned values.
-        /// </summary>
-        public GameField()
-        {
-            Height = 25;
-            Width = 50;
-            TopPosition = 5;
-            BorderColor = ConsoleColor.DarkGreen;
-        }
-
         /// <summary>
         /// Height of the game field.
         /// </summary>
@@ -34,45 +26,17 @@
         /// <summary>
         /// Border color for game field.
         /// </summary>
-        private ConsoleColor BorderColor;
+        public ConsoleColor BorderColor;
 
         /// <summary>
-        /// Draws a border line for game field.
+        /// Creates new game field with assigned values.
         /// </summary>
-        public void DrawBorder()
+        public GameField()
         {
-            string startCorner = "╔";
-            string cornerBottomLeft = "╚";
-            string cornerTopRight = "╗";
-            string cornerBottomRight = "╝";
-            string verticalLine = "║";
-            string horizontalLine = "═";
-
-            //draw top of the border
-            for (int w = 0; w < Width; w++)
-            {
-                startCorner += horizontalLine;
-            }
-            startCorner += cornerTopRight + "\n";
-
-            //draw vertical lines
-            for (int h = 0; h < Height; h++)
-            {
-                startCorner += verticalLine + new string(' ', Width) + verticalLine + "\n";
-            }
-            startCorner += cornerBottomLeft;
-
-            //draw bottom of the border
-            for (int w = 0; w < Width; w++)
-            {
-                startCorner += horizontalLine;
-            }
-            startCorner += cornerBottomRight;
-
-            Console.SetCursorPosition(0, TopPosition);
-            Console.ForegroundColor = BorderColor;
-            Console.Write(startCorner);
-            Console.ResetColor();
+            Height = 4;
+            Width = 4;
+            TopPosition = 5;
+            BorderColor = ConsoleColor.DarkGreen;
         }
     }
 }

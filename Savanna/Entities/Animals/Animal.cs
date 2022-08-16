@@ -8,17 +8,9 @@ namespace Savanna.Entities.Animals
     public class Animal
     {
         /// <summary>
-        /// Creates animal with assigned ID.
-        /// </summary>
-        public Animal()
-        {
-            ID = Interlocked.Increment(ref globalAnimalId);
-        }
-
-        /// <summary>
         /// Unique animal identifier.
         /// </summary>
-        public int ID { get; private set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// Stores two coordinates for current animal position. [0] is width coordinate. [1] is height coordinate.
@@ -42,9 +34,19 @@ namespace Savanna.Entities.Animals
         /// </summary>
         public int VisionRange { get; set; }
 
+        public ConsoleColor AnimalColor { get; set; }
+
         /// <summary>
         /// Field used for incrementing animals ID.
         /// </summary>
         protected static int globalAnimalId = 0;
+
+        /// <summary>
+        /// Creates animal with assigned ID.
+        /// </summary>
+        public Animal()
+        {
+            ID = Interlocked.Increment(ref globalAnimalId);
+        }
     }
 }
