@@ -5,6 +5,9 @@
     /// </summary>
     public class Antelope : Animal
     {
+        /// <summary>
+        /// Stores data about animal color.
+        /// </summary>
         public new ConsoleColor AnimalColor { get => SetAntelopeColor(); }
 
         /// <summary>
@@ -17,6 +20,10 @@
             VisionRange = 4;
         }
 
+        /// <summary>
+        /// Method to set antelopes color based on health level.
+        /// </summary>
+        /// <returns>Color for antelope.</returns>
         public ConsoleColor SetAntelopeColor()
         {
             var antelopeColor = this.Health < 2 == true ? ConsoleColor.DarkGray : ConsoleColor.White;

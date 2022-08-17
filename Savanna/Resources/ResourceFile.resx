@@ -121,6 +121,7 @@
     <value>THIS IS SAVANNA
 PRESS 'L' TO ADD A LION, PRESS 'A' TO ADD AN ANTELOPE TO GAME FIELD
 PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU</value>
+    <comment>Rules for game.</comment>
   </data>
   <data name="MainMenuIntro" xml:space="preserve">
     <value> _____   ___   _   _   ___   _   _  _   _   ___  
@@ -134,5 +135,6 @@ PRESS 'ESC' TO STOP THE GAME AND GO BACK TO MAIN MENU</value>
 Welcome to the Savanna. What would you like to do?
 (Use the arrow to cycle through options and press enter to select an option.)
 </value>
+    <comment>Menu introduction.</comment>
   </data>
 </root>

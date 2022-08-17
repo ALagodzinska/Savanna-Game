@@ -1,7 +1,7 @@
-﻿using Savanna.Entities.GameField;
-
-namespace Savanna.Entities.Animals
+﻿namespace Savanna.Entities.Animals
 {
+    using Savanna.Entities.GameField;
+
     /// <summary>
     /// Base class for all animals with main properties.
     /// </summary>
@@ -13,15 +13,18 @@ namespace Savanna.Entities.Animals
         public int ID { get; set; }
 
         /// <summary>
-        /// Stores two coordinates for current animal position. [0] is width coordinate. [1] is height coordinate.
+        /// Stores two coordinates for current animal position.
         /// </summary>
         public Coordinates CurrentPosition { get; set; }
 
         /// <summary>
-        /// Stores two coordinates for next animal position. [0] is width coordinate. [1] is height coordinate.
+        /// Stores two coordinates for next animal position.
         /// </summary>
         public Coordinates NextPosition { get; set; }
 
+        /// <summary>
+        /// Animal health.
+        /// </summary>
         public double Health { get; set; }
 
         /// <summary>
@@ -30,10 +33,13 @@ namespace Savanna.Entities.Animals
         public bool? IsAlive { get; set; }
 
         /// <summary>
-        /// How many cells around the animal sees.
+        /// How many cells around the animal it sees.
         /// </summary>
         public int VisionRange { get; set; }
 
+        /// <summary>
+        /// Color of the animal, it may be different because of type, health level.
+        /// </summary>
         public ConsoleColor AnimalColor { get; set; }
 
         /// <summary>

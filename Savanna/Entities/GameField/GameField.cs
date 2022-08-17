@@ -1,10 +1,7 @@
-﻿using Savanna.Entities.Animals;
-using Savanna.Logic_Layer;
-
-namespace Savanna.Entities.GameField
+﻿namespace Savanna.Entities.GameField
 {
     /// <summary>
-    /// Stores data about game field and method to draw game border.
+    /// Stores data about game field.
     /// </summary>
     public class GameField
     {

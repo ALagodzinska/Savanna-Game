@@ -1,18 +1,28 @@
-﻿using Savanna.Entities.Animals;
-using Savanna.Entities.GameField;
-using Savanna.Entities.Menu;
-using System.Resources;
-using System.Reflection;
-
-namespace Savanna.Logic_Layer
+﻿namespace Savanna.Logic_Layer
 {
+    using Savanna.Entities.Animals;
+    using System.Resources;
+    using System.Reflection;
+    using Savanna.Menu;
+
+    /// <summary>
+    /// Controls main aspects of the game.
+    /// </summary>
     public class GameController
     {
-        // Resource data
+        /// <summary>
+        /// Resource data.
+        /// </summary>
         ResourceManager resourceManager = new ResourceManager("Savanna.Resources.ResourceFile", Assembly.GetExecutingAssembly());
 
-        // Controls main aspects of games
+        /// <summary>
+        /// Stores main game logic.
+        /// </summary>
         GameLogic gameLogic = new();
+
+        /// <summary>
+        /// Stores menu data.
+        /// </summary>
         GameMenu menu;
 
         /// <summary>
@@ -20,13 +30,16 @@ namespace Savanna.Logic_Layer
         /// </summary>
         bool exit = false;
 
+        /// <summary>
+        /// Assign menu values to a menu field.
+        /// </summary>
         public GameController()
         {
             menu = new GameMenu(resourceManager.GetString("MainMenuIntro"));
         }
 
         /// <summary>
-        /// Display main menu.
+        /// Display main menu and runs it.
         /// </summary>
         public void RunGame()
         {
@@ -51,6 +64,9 @@ namespace Savanna.Logic_Layer
             }
         }
 
+        /// <summary>
+        /// Display game rules to user.
+        /// </summary>
         public void DisplayGameRules()
         {
             Console.Clear();
@@ -76,7 +92,7 @@ namespace Savanna.Logic_Layer
         {
             bool exit = false;
 
-            // Create empty borders
+            // Create empty borders.
             gameLogic.gameFieldLogic.DrawBorder();
 
             do
@@ -90,13 +106,11 @@ namespace Savanna.Logic_Layer
                     switch (consoleKey)
                     {
                         case ConsoleKey.A:
-                            //gameLogic.CreateNewAntelope();
                             var antelope = gameLogic.CreateNewAnimal(typeof(Antelope));
                             gameLogic.AddAnimalToAnimalList(antelope);
                             break;
 
                         case ConsoleKey.L:
-                            //gameLogic.CreateNewLion();
                             var lion = gameLogic.CreateNewAnimal(typeof(Lion));
                             gameLogic.AddAnimalToAnimalList(lion);
                             break;

@@ -1,17 +1,37 @@
-﻿using Savanna.Entities.Animals;
-using Savanna.Entities.GameField;
-
-namespace Savanna.Logic_Layer
+﻿namespace Savanna.Logic_Layer
 {
+    using Savanna.Entities.Animals;
+    using Savanna.Entities.GameField;
+
+    /// <summary>
+    /// Stores main game logic.
+    /// </summary>
     public class GameFieldLogic
     {
+        /// <summary>
+        /// List of animals
+        /// </summary>
         public List<Animal> Animals;
 
+        /// <summary>
+        /// Game field.
+        /// </summary>
         GameField GameField;
 
+        /// <summary>
+        /// Responsible for animal move and animal location on game field.
+        /// </summary>
         AnimalMover AnimalMover;
 
+        /// <summary>
+        /// Pair creation logic and newborn logic.
+        /// </summary>
         AnimalPairLogic AnimalPairLogic;
+
+        /// <summary>
+        /// Assign values to this class fields.
+        /// </summary>
+        /// <param name="gameField">Created game field.</param>
         public GameFieldLogic(GameField gameField)
         {
 
@@ -20,6 +40,7 @@ namespace Savanna.Logic_Layer
             AnimalPairLogic = new AnimalPairLogic(AnimalMover);
             GameField = gameField;
         }
+
         /// <summary>
         /// Draws a border line for game field.
         /// </summary>
@@ -59,12 +80,19 @@ namespace Savanna.Logic_Layer
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Sets animal position and display it on a game field.
+        /// </summary>
+        /// <param name="animal">Animal.</param>
         public void SetAnimalPosition(Animal animal)
         {
             AnimalMover.SetNewAnimalCurrentPosition(animal);
             DrawAnimal(animal);
         }
 
+        /// <summary>
+        /// Set position for all animals next move.
+        /// </summary>
         public void SetNextPositionForAnimals()
         {
             foreach (var animal in Animals)
@@ -73,6 +101,9 @@ namespace Savanna.Logic_Layer
             }
         }
 
+        /// <summary>
+        /// Draws game with border and animals inside game field.
+        /// </summary>
         public void DrawGame()
         {
             DrawBorder();
@@ -120,10 +151,15 @@ namespace Savanna.Logic_Layer
             Console.ResetColor();
         }
 
+        /// <summary>
+        /// Apply logic for next animals move.
+        /// </summary>
+        /// <param name="animal">Animal to move.</param>
         public void MakeMove(Animal animal)
         {
             animal.CurrentPosition = animal.NextPosition;
             animal.NextPosition = null;
+
             animal.Health -= 0.5;
             if (animal.Health <= 0)
             {
@@ -131,6 +167,9 @@ namespace Savanna.Logic_Layer
             }
         }
 
+        /// <summary>
+        /// Applay pairs logic.
+        /// </summary>
         public void AnimalPairsCreated()
         {
             //check if together for next iteration
@@ -145,6 +184,9 @@ namespace Savanna.Logic_Layer
             AnimalPairLogic.animalPairs.RemoveAll(c => c.BrokeUp == true);
         }
 
+        /// <summary>
+        /// Apply logic for adding newborn animals to game.
+        /// </summary>
         public void AddNewbornsToGame()
         {
             if (AnimalPairLogic.animalsToBeBorn.Count > 0)
@@ -153,6 +195,7 @@ namespace Savanna.Logic_Layer
                 {
                     Animals.Add(newborn);
                 }
+
                 AnimalPairLogic.animalsToBeBorn.Clear();
             }
         }

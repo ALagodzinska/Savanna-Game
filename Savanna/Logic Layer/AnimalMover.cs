@@ -1,21 +1,40 @@
-﻿using Savanna.Entities.Animals;
-using Savanna.Entities.GameField;
-
-namespace Savanna.Logic_Layer
+﻿namespace Savanna.Logic_Layer
 {
+    using Savanna.Entities.Animals;
+    using Savanna.Entities.GameField;
+
+    /// <summary>
+    /// Class responsible for animal placement on a game field.
+    /// </summary>
     public class AnimalMover
     {
+        /// <summary>
+        /// Height of game field.
+        /// </summary>
+        public int FieldHeight { get; set; }
+
+        /// <summary>
+        /// Width of game field.
+        /// </summary>
+        public int FieldWidth { get; set; }
+
+        /// <summary>
+        /// List of animals.
+        /// </summary>
+        public List<Animal> Animals { get; set; }
+
+        /// <summary>
+        /// Assign values to class properties.
+        /// </summary>
+        /// <param name="fieldHeight">Height of the game field.</param>
+        /// <param name="fieldWidth">Width of the game field.</param>
+        /// <param name="animals">List of animals.</param>
         public AnimalMover(int fieldHeight, int fieldWidth, List<Animal> animals)
         {
             FieldHeight = fieldHeight;
             FieldWidth = fieldWidth;
             Animals = animals;
         }
-
-        public int FieldHeight { get; set; }
-        public int FieldWidth { get; set; }
-        public List<Animal> Animals { get; set; }
-
 
         /// <summary>
         /// Randomly set new animal current position.
@@ -40,9 +59,9 @@ namespace Savanna.Logic_Layer
         }
 
         /// <summary>
-        /// Get animal by current position on a game field.
+        /// Get animal by coordinates on a game field.
         /// </summary>
-        /// <param name="coordinates">Animal current position.</param>
+        /// <param name="coordinates">Animal position.</param>
         /// <returns>Animal.</returns>
         public Animal? GetAnimalByCurrentCoordinates(Coordinates coordinates)
         {
@@ -54,9 +73,9 @@ namespace Savanna.Logic_Layer
         }
 
         /// <summary>
-        /// Based on animal type and location decides where next move should be done.
+        /// Based on animal type and location sets next position for an animal.
         /// </summary>
-        /// <param name="animal">Animal to make a move.</param>
+        /// <param name="animal">Animal to set next position to.</param>
         public void NextPositionForAnimals(Animal animal)
         {
             var closestAnimalList = AnimalsInVisionRange(animal);
@@ -81,14 +100,14 @@ namespace Savanna.Logic_Layer
                 }
                 else
                 {
-                    animal.NextPosition = RandomMove(movePossibility);
+                    animal.NextPosition = RandomMovePosition(movePossibility);
                 }
             }
             else if (animal.GetType() == typeof(Antelope))
             {
                 var lions = closestAnimalList.OfType<Lion>().ToList();
 
-                animal.NextPosition = lions.Count != 0 ? GetFarsetSpaceFromLion(movePossibility, lions, (Antelope)animal) : RandomMove(movePossibility);
+                animal.NextPosition = lions.Count != 0 ? GetFarsetSpaceFromLion(movePossibility, lions, (Antelope)animal) : RandomMovePosition(movePossibility);
             }
         }
 
@@ -133,7 +152,7 @@ namespace Savanna.Logic_Layer
         /// <summary>
         /// Finds free spaces around animal to make a next move.
         /// </summary>
-        /// <param name="animal">One animal.</param>
+        /// <param name="animal">Animal.</param>
         /// <returns>Return list with coordinates with free spaces to move.</returns>
         public List<Coordinates> PossibleMoves(Animal animal)
         {
@@ -175,12 +194,18 @@ namespace Savanna.Logic_Layer
             return foundAnimal != null ? true : false;
         }
 
-        private Antelope? GetClosestAntelope(List<Antelope> animalsAround, Animal currentAnimal)
+        /// <summary>
+        /// Finds closest antelope to an animal.
+        /// </summary>
+        /// <param name="antelopesAround">List of antelopes in animals vision range.</param>
+        /// <param name="currentAnimal">Animal.</param>
+        /// <returns>Closest antelope to an animal.</returns>
+        private Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
         {
             double minDistance = currentAnimal.VisionRange * 2;
             Coordinates closestAnimalCoordinats = new();
 
-            foreach (var animal in animalsAround)
+            foreach (var animal in antelopesAround)
             {
                 var distance = FindDistanceBetweenTwoCoordinates(animal.CurrentPosition, currentAnimal.CurrentPosition);
 
@@ -191,15 +216,15 @@ namespace Savanna.Logic_Layer
                 }
             }
 
-            return animalsAround.FirstOrDefault(a => a.CurrentPosition == closestAnimalCoordinats);
+            return antelopesAround.FirstOrDefault(a => a.CurrentPosition == closestAnimalCoordinats);
         }
 
         /// <summary>
-        /// Make a random move on a game field.
+        /// Find random position on a game field for nrxt move.
         /// </summary>
         /// <param name="moves">List with available places to move for an animal.</param>
         /// <returns>Coordinates for next move.</returns>
-        private Coordinates RandomMove(List<Coordinates> moves)
+        private Coordinates RandomMovePosition(List<Coordinates> moves)
         {
             Random random = new Random();
             var moveIndex = random.Next(moves.Count);
@@ -210,20 +235,20 @@ namespace Savanna.Logic_Layer
         /// <summary>
         /// Finds distance between two animals coordinates.
         /// </summary>
-        /// <param name="animalCoordinates">Animal coordinates to which we are looking for distance.</param>
-        /// <param name="currentAnimal">Animal from which we are looking for distance.</param>
+        /// <param name="neighbourAnimalCoordinates">Animal coordinates to which we are looking for distance.</param>
+        /// <param name="currentAnimalCoordinates">Animal from which we are looking for distance.</param>
         /// <returns>Return distance value between two coordinates.</returns>
-        public double FindDistanceBetweenTwoCoordinates(Coordinates animalCoordinates, Coordinates currentAnimalCoordinates)
+        public double FindDistanceBetweenTwoCoordinates(Coordinates neighbourAnimalCoordinates, Coordinates currentAnimalCoordinates)
         {
-            var widthDifference = animalCoordinates.X - currentAnimalCoordinates.X;
-            var heightDifference = animalCoordinates.Y - currentAnimalCoordinates.Y;
+            var widthDifference = neighbourAnimalCoordinates.X - currentAnimalCoordinates.X;
+            var heightDifference = neighbourAnimalCoordinates.Y - currentAnimalCoordinates.Y;
             var distance = Math.Sqrt((widthDifference * widthDifference) + (heightDifference * heightDifference));
 
             return distance;
         }
 
         /// <summary>
-        /// Sets next lions move or action based on closest animal and free spaces to move.
+        /// Sets next lions position for move or action based on closest animal and free spaces to move.
         /// </summary>
         /// <param name="lionToMove">Lion to make a move.</param>
         /// <param name="closestAntelope">Nearest antelope in vision range.</param>
@@ -260,7 +285,7 @@ namespace Savanna.Logic_Layer
         }
 
         /// <summary>
-        /// To choose lion closest place to catch nearest antelope.
+        /// Get closest place for lion to catch nearest antelope.
         /// </summary>
         /// <param name="freeSpaceToMove">Possibilities for lion to move.</param>
         /// <param name="closestAntelope">Closest antelope to lion.</param>
@@ -284,7 +309,7 @@ namespace Savanna.Logic_Layer
         }
 
         /// <summary>
-        /// Finds by distance points far place from all lions in the vision range.
+        /// Finds by distance points far place from all lions in the antelopes vision range.
         /// </summary>
         /// <param name="freeSpaceToMove">Possible places to move for antelope.</param>
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>

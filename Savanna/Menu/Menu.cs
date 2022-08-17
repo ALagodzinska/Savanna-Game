@@ -3,6 +3,7 @@
     /// <summary>
     /// Used for creating and displaying menu to user.
     /// </summary>
+    /// <typeparam name="T">Enum of options.</typeparam>
     public class Menu<T>
     {
         /// <summary>

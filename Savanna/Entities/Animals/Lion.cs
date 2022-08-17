@@ -10,6 +10,9 @@
         /// </summary>
         public bool Ate { get; set; }
 
+        /// <summary>
+        /// Stores data about animal color.
+        /// </summary>
         public new ConsoleColor AnimalColor { get => SetLionColor(); }
 
         /// <summary>
@@ -22,6 +25,10 @@
             IsAlive = true;
         }
 
+        /// <summary>
+        /// Method to set lions color based on health level and ate parameter.
+        /// </summary>
+        /// <returns>Color for lion.</returns>
         public ConsoleColor SetLionColor()
         {
             var lionColor = this.Health < 2 == true ? ConsoleColor.Yellow : ConsoleColor.DarkYellow;
@@ -30,6 +37,7 @@
             {
                 lionColor = ConsoleColor.Red;
             }
+
             return lionColor;
         }
     }

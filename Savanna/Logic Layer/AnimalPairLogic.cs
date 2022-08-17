@@ -1,43 +1,68 @@
-﻿using Savanna.Entities.Animals;
-using Savanna.Entities.GameField;
-
-namespace Savanna.Logic_Layer
+﻿namespace Savanna.Logic_Layer
 {
+    using Savanna.Entities.Animals;
+    using Savanna.Entities.GameField;
+
+    /// <summary>
+    /// Responsible for animal pair creation logic and making animal babies.
+    /// </summary>
     public class AnimalPairLogic
     {
+        /// <summary>
+        /// List of animal pairs.
+        /// </summary>
         public List<AnimalPair> animalPairs = new();
 
+        /// <summary>
+        /// List of animal babies.
+        /// </summary>
         public List<Animal> animalsToBeBorn = new();
 
+        /// <summary>
+        /// Field to use AnimalMover logic.
+        /// </summary>
         AnimalMover AnimalMover;
 
+        /// <summary>
+        /// Assign value to class properties.
+        /// </summary>
+        /// <param name="animalMover">Instance of AnimalMover class.</param>
         public AnimalPairLogic(AnimalMover animalMover)
         {
             AnimalMover = animalMover;
         }
+
+        /// <summary>
+        /// Create pair for animals that stand nearby, check if they will stay together in next iteration and adds them to pair list.
+        /// </summary>
+        /// <param name="mainAnimal">Animal to find a pair for.</param>
         public void CheckIfAnimalHavePair(Animal mainAnimal)
         {
-            var listWithCloseAnimalsOneType = ClosestAnimalsWithSameType(mainAnimal);
+            var listWithCloseAnimalsOneType = AnimalsNearbyWithSameType(mainAnimal);
+
             if (listWithCloseAnimalsOneType.Count > 0)
             {
-                foreach (var animal in listWithCloseAnimalsOneType)
+                foreach (var closeAnimal in listWithCloseAnimalsOneType)
                 {
-                    var couple = new AnimalPair(mainAnimal, animal);
+                    var animalPair = new AnimalPair(mainAnimal, closeAnimal);
 
-                    if (animalPairs.FirstOrDefault(c => c.AnimalWithLargestID == couple.AnimalWithLargestID
-                    && c.AnimalWithSmallestID == couple.AnimalWithSmallestID) == null)
+                    if (animalPairs.FirstOrDefault(c => c.AnimalWithLargestID == animalPair.AnimalWithLargestID
+                    && c.AnimalWithSmallestID == animalPair.AnimalWithSmallestID) == null)
                     {
-                        var distanceOnNextMove = AnimalMover.FindDistanceBetweenTwoCoordinates(animal.NextPosition, mainAnimal.NextPosition);
+                        var distanceOnNextMove = AnimalMover.FindDistanceBetweenTwoCoordinates(closeAnimal.NextPosition, mainAnimal.NextPosition);
 
-                        if (distanceOnNextMove == 1 && mainAnimal.IsAlive == true && animal.IsAlive == true)
+                        if (distanceOnNextMove == 1 && mainAnimal.IsAlive == true && closeAnimal.IsAlive == true)
                         {
-                            animalPairs.Add(couple);
+                            animalPairs.Add(animalPair);
                         }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Checks if animals stay together for the next round.
+        /// </summary>
         public void CheckIfPairsAreTogether()
         {
             if (animalPairs.Count > 0)
@@ -45,6 +70,7 @@ namespace Savanna.Logic_Layer
                 foreach (var couple in animalPairs)
                 {
                     var distanceOnMove = AnimalMover.FindDistanceBetweenTwoCoordinates(couple.AnimalWithLargestID.CurrentPosition, couple.AnimalWithSmallestID.CurrentPosition);
+
                     if (distanceOnMove == 1)
                     {
                         couple.RoundsTogether++;
@@ -62,7 +88,12 @@ namespace Savanna.Logic_Layer
             }
         }
 
-        private List<Animal> ClosestAnimalsWithSameType(Animal animal)
+        /// <summary>
+        /// Find all animals nearby(next to each other) with the same type.
+        /// </summary>
+        /// <param name="animal">Animal to find neighbours for.</param>
+        /// <returns>List of animals nearby.</returns>
+        private List<Animal> AnimalsNearbyWithSameType(Animal animal)
         {
             Coordinates coordinates = new Coordinates();
             List<Animal> closestAnimalList = new List<Animal>();
@@ -96,9 +127,13 @@ namespace Savanna.Logic_Layer
             return closestAnimalList;
         }
 
+        /// <summary>
+        /// Creates new animal and add baby to the newborn list.
+        /// </summary>
+        /// <param name="animalPair">Couple to have a baby.</param>
         private void AnimalToBeBorn(AnimalPair animalPair)
         {
-            //return animal to be born 
+            //return place for animal to be born 
             var bornAnimalCoordinates = GetPlaceToBorn(animalPair.AnimalWithLargestID, animalPair.AnimalWithSmallestID);
 
             if (animalPair.AnimalWithSmallestID.GetType() == typeof(Lion))
@@ -115,7 +150,13 @@ namespace Savanna.Logic_Layer
             }
         }
 
-        private List<Coordinates> GetListWithUniqueCoordinates(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
+        /// <summary>
+        /// Finds free spaces around both parents, return list of free space without repetition.
+        /// </summary>
+        /// <param name="spacesAroundFirstParent">List of free spaces to move of first parent.</param>
+        /// <param name="spacesAroundSecondParent">List of free spaces to move of second parent.</param>
+        /// <returns>List of unrepetitive places to place a newborn animal to.</returns>
+        private List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
         {
             for (int i = 0; i < spacesAroundFirstParent.Count; i++)
             {
@@ -133,12 +174,18 @@ namespace Savanna.Logic_Layer
             return list;
         }
 
-        private Coordinates GetPlaceToBorn(Animal mainAnimal, Animal sameTypeAnimalNear)
+        /// <summary>
+        /// Gets position on the game field to add newborn animal.
+        /// </summary>
+        /// <param name="oneParent">One animal from the pair.</param>
+        /// <param name="secondParent">Second animal from the pair.</param>
+        /// <returns>Coordinates for newborn animals position on game field.</returns>
+        private Coordinates GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
-            var animalMoves = AnimalMover.PossibleMoves(mainAnimal);
-            var sameAnimalTypeMoves = AnimalMover.PossibleMoves(sameTypeAnimalNear);
+            var animalMoves = AnimalMover.PossibleMoves(oneParent);
+            var sameAnimalTypeMoves = AnimalMover.PossibleMoves(secondParent);
 
-            var listWithFreeSpaces = GetListWithUniqueCoordinates(animalMoves, sameAnimalTypeMoves);
+            var listWithFreeSpaces = GetListWithUniqueFreeSpacesAroundParents(animalMoves, sameAnimalTypeMoves);
 
             foreach (var move in listWithFreeSpaces)
             {
@@ -149,7 +196,6 @@ namespace Savanna.Logic_Layer
             }
 
             Random random = new Random();
-
             var placeToBornIndex = random.Next(0, listWithFreeSpaces.Count);
 
             return listWithFreeSpaces[placeToBornIndex];
