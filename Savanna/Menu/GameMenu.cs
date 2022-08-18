@@ -20,7 +20,7 @@
         /// Creates menu with passed menu information and options.
         /// </summary>
         /// <param name="intro">Title and menu control rules.</param>
-        public GameMenu(string intro) : base(new MenuOption<MainMenuOptions>[2], intro)
+        public GameMenu(string intro) : base(new MenuOption<MainMenuOptions>[Enum.GetNames(typeof(MainMenuOptions)).Length], intro)
         {
             Options[0] = new MenuOption<MainMenuOptions>()
             {
