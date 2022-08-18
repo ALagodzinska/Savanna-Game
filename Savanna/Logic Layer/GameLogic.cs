@@ -49,22 +49,27 @@
         /// </summary>
         /// <param name="typeOfAnimal">Animal type.</param>
         /// <returns>Created animal.</returns>
-        public Animal CreateNewAnimal(Type typeOfAnimal)
+        public Animal? CreateNewAnimal(Type typeOfAnimal)
         {
             Animal createdAnimal;
 
-            if(typeOfAnimal == typeof(Lion))
+            if (gameFieldLogic.DoesGameFieldHaveFreeSpaces())
             {
-                createdAnimal = new Lion();
-            }
-            else
-            {
-                createdAnimal = new Antelope();
+                if (typeOfAnimal == typeof(Lion))
+                {
+                    createdAnimal = new Lion();
+                }
+                else
+                {
+                    createdAnimal = new Antelope();
+                }
+
+                gameFieldLogic.SetAnimalPosition(createdAnimal);
+
+                return createdAnimal;
             }
 
-            gameFieldLogic.SetAnimalPosition(createdAnimal);
-
-            return createdAnimal;
+            return null;
         }
 
         /// <summary>
@@ -73,7 +78,10 @@
         /// <param name="animal">Animal to add to a list.</param>
         public void AddAnimalToAnimalList(Animal animal)
         {
-            gameFieldLogic.Animals.Add(animal);
+            if(animal != null)
+            {
+                gameFieldLogic.Animals.Add(animal);
+            }            
         }
     }
 }

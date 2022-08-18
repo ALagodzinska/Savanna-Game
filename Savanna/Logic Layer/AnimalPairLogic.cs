@@ -136,18 +136,21 @@
             //return place for animal to be born 
             var bornAnimalCoordinates = GetPlaceToBorn(animalPair.AnimalWithLargestID, animalPair.AnimalWithSmallestID);
 
-            if (animalPair.AnimalWithSmallestID.GetType() == typeof(Lion))
+            if(bornAnimalCoordinates != null)
             {
-                var createdLion = new Lion();
-                createdLion.CurrentPosition = bornAnimalCoordinates;
-                animalsToBeBorn.Add(createdLion);
-            }
-            else
-            {
-                var createdAntelope = new Antelope();
-                createdAntelope.CurrentPosition = bornAnimalCoordinates;
-                animalsToBeBorn.Add(createdAntelope);
-            }
+                if (animalPair.AnimalWithSmallestID.GetType() == typeof(Lion))
+                {
+                    var createdLion = new Lion();
+                    createdLion.CurrentPosition = bornAnimalCoordinates;
+                    animalsToBeBorn.Add(createdLion);
+                }
+                else
+                {
+                    var createdAntelope = new Antelope();
+                    createdAntelope.CurrentPosition = bornAnimalCoordinates;
+                    animalsToBeBorn.Add(createdAntelope);
+                }
+            }            
         }
 
         /// <summary>
@@ -180,25 +183,32 @@
         /// <param name="oneParent">One animal from the pair.</param>
         /// <param name="secondParent">Second animal from the pair.</param>
         /// <returns>Coordinates for newborn animals position on game field.</returns>
-        private Coordinates GetPlaceToBorn(Animal oneParent, Animal secondParent)
+        private Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
             var animalMoves = AnimalMover.PossibleMoves(oneParent);
             var sameAnimalTypeMoves = AnimalMover.PossibleMoves(secondParent);
 
             var listWithFreeSpaces = GetListWithUniqueFreeSpacesAroundParents(animalMoves, sameAnimalTypeMoves);
 
-            foreach (var move in listWithFreeSpaces)
+            if (listWithFreeSpaces.Count == 0)
             {
-                if (AnimalMover.CheckIfPlaceWillBeTakenInNextStep(move))
-                {
-                    listWithFreeSpaces.Remove(move);
-                }
+                return null;
             }
+            else
+            {
+                foreach (var move in listWithFreeSpaces)
+                {
+                    if (AnimalMover.CheckIfPlaceWillBeTakenInNextStep(move))
+                    {
+                        listWithFreeSpaces.Remove(move);
+                    }
+                }
 
-            Random random = new Random();
-            var placeToBornIndex = random.Next(0, listWithFreeSpaces.Count);
+                Random random = new Random();
+                var placeToBornIndex = random.Next(0, listWithFreeSpaces.Count);
 
-            return listWithFreeSpaces[placeToBornIndex];
+                return listWithFreeSpaces[placeToBornIndex];
+            }
         }
     }
 }

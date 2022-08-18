@@ -152,6 +152,15 @@
         }
 
         /// <summary>
+        /// Check if there is enough free space to add new animal.
+        /// </summary>
+        /// <returns></returns>
+        public bool DoesGameFieldHaveFreeSpaces()
+        {
+            return Animals.Count <= (GameField.Height * GameField.Width) / 2;
+        }
+
+        /// <summary>
         /// Apply logic for next animals move.
         /// </summary>
         /// <param name="animal">Animal to move.</param>
