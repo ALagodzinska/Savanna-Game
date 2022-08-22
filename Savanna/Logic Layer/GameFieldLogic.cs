@@ -68,7 +68,7 @@
             startCorner += cornerBottomLeft;
 
             //draw bottom of the border
-            for (int w = 0; w < GameField.Height; w++)
+            for (int w = 0; w < GameField.Width; w++)
             {
                 startCorner += horizontalLine;
             }
