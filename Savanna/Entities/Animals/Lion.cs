@@ -8,7 +8,7 @@
         /// <summary>
         /// Used to understand if animal had eaten another animal.
         /// </summary>
-        public bool Ate { get; set; }
+        public bool DoesAte { get; set; }
 
         /// <summary>
         /// Stores data about animal color.
@@ -33,7 +33,7 @@
         {
             var lionColor = this.Health < 2 == true ? ConsoleColor.Yellow : ConsoleColor.DarkYellow;
 
-            if (this.Ate)
+            if (this.DoesAte)
             {
                 lionColor = ConsoleColor.Red;
             }

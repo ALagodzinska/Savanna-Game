@@ -23,7 +23,7 @@
         /// <summary>
         /// Stores data about animal pair status. False - if pair is still together. True - if pair broke up.
         /// </summary>
-        public bool BrokeUp { get; set; }
+        public bool DoesBrokeUp { get; set; }
 
         /// <summary>
         /// Creates animal pair for two animals.
@@ -44,7 +44,7 @@
             }
 
             RoundsTogether = 1;
-            BrokeUp = false;
+            DoesBrokeUp = false;
         }
     }
 }

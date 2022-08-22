@@ -97,7 +97,7 @@
         {
             foreach (var animal in Animals)
             {
-                AnimalMover.NextPositionForAnimals(animal);
+                AnimalMover.SetNextPositionForAnimal(animal);
             }
         }
 
@@ -136,7 +136,7 @@
                     var lion = (Lion)animal;
 
                     Console.ForegroundColor = lion.AnimalColor;
-                    lion.Ate = false;
+                    lion.DoesAte = false;
                 }
                 else
                 {
@@ -182,7 +182,7 @@
         public void AnimalPairsCreated()
         {
             //check if together for next iteration
-            AnimalPairLogic.CheckIfPairsAreTogether();
+            AnimalPairLogic.ActionForPairsOnMove();
 
             //create couple if together in this and next iteration
             foreach (var animal in Animals)
@@ -190,7 +190,7 @@
                 AnimalPairLogic.CheckIfAnimalHavePair(animal);
             }
 
-            AnimalPairLogic.animalPairs.RemoveAll(c => c.BrokeUp == true);
+            AnimalPairLogic.animalPairs.RemoveAll(c => c.DoesBrokeUp == true);
         }
 
         /// <summary>

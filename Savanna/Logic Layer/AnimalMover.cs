@@ -76,7 +76,7 @@
         /// Based on animal type and location sets next position for an animal.
         /// </summary>
         /// <param name="animal">Animal to set next position to.</param>
-        public void NextPositionForAnimals(Animal animal)
+        public void SetNextPositionForAnimal(Animal animal)
         {
             var closestAnimalList = AnimalsInVisionRange(animal);
             var movePossibility = PossibleMoves(animal);
@@ -168,7 +168,7 @@
                         || w >= FieldWidth || w < 0
                         || h == animal.CurrentPosition.Y && w == animal.CurrentPosition.X
                         || (GetAnimalByCurrentCoordinates(foundCoordinates) != null)
-                        || CheckIfPlaceWillBeTakenInNextStep(foundCoordinates))
+                        || DoesPlaceWillBeTakenInNextStep(foundCoordinates))
                     {
                         continue;
                     }
@@ -185,7 +185,7 @@
         /// </summary>
         /// <param name="coordinates">Coordinates to place an animal.</param>
         /// <returns>True if place is taken, false if it is free.</returns>
-        public bool CheckIfPlaceWillBeTakenInNextStep(Coordinates coordinates)
+        public bool DoesPlaceWillBeTakenInNextStep(Coordinates coordinates)
         {
             var foundAnimal = Animals.FirstOrDefault(a => a.NextPosition != null
             && a.NextPosition.X == coordinates.X
@@ -257,11 +257,11 @@
         {
             var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove.CurrentPosition);
 
-            if (distance == 1 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
+            if (distance == 1 && !DoesPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
             {
                 LionEatAntelope(lionToMove, closestAntelope);
             }
-            else if (distance > 1 && distance < 2 && !CheckIfPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
+            else if (distance > 1 && distance < 2 && !DoesPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
             {
                 lionToMove.NextPosition = closestAntelope.CurrentPosition;
             }
@@ -279,7 +279,7 @@
         private void LionEatAntelope(Lion lion, Antelope antelope)
         {
             lion.NextPosition = antelope.CurrentPosition;
-            lion.Ate = true;
+            lion.DoesAte = true;
             lion.Health += 10;
             antelope.IsAlive = false;
         }

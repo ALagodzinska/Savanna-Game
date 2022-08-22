@@ -53,7 +53,7 @@
 
                         if (distanceOnNextMove == 1 && mainAnimal.IsAlive == true && closeAnimal.IsAlive == true)
                         {
-                            animalPairs.Add(animalPair);
+                            AddNewPair(animalPair);
                         }
                     }
                 }
@@ -61,9 +61,18 @@
         }
 
         /// <summary>
+        /// Adds new animal pair to an animal pair list.
+        /// </summary>
+        /// <param name="animalPair">Animal pair.</param>
+        public void AddNewPair(AnimalPair animalPair)
+        {
+            animalPairs.Add(animalPair);
+        }
+
+        /// <summary>
         /// Checks if animals stay together for the next round.
         /// </summary>
-        public void CheckIfPairsAreTogether()
+        public void ActionForPairsOnMove()
         {
             if (animalPairs.Count > 0)
             {
@@ -77,12 +86,12 @@
                         if (couple.RoundsTogether == 3)
                         {
                             AnimalToBeBorn(couple);
-                            couple.BrokeUp = true;
+                            couple.DoesBrokeUp = true;
                         }
                     }
                     else
                     {
-                        couple.BrokeUp = true;
+                        couple.DoesBrokeUp = true;
                     }
                 }
             }
@@ -198,7 +207,7 @@
             {
                 foreach (var move in listWithFreeSpaces)
                 {
-                    if (AnimalMover.CheckIfPlaceWillBeTakenInNextStep(move))
+                    if (AnimalMover.DoesPlaceWillBeTakenInNextStep(move))
                     {
                         listWithFreeSpaces.Remove(move);
                     }
