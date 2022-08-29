@@ -1,9 +1,14 @@
-﻿namespace Savanna;
-
-class Program
+﻿namespace Savanna
 {
-    static void Main(string[] args)
+    using Savanna.Logic_Layer;
+
+    class Program
     {
-        Console.WriteLine("Welcome to game Savanna");
+        static void Main(string[] args)
+        {
+            GameController game = new GameController();
+            game.RunGame();
+        }
     }
 }
+
