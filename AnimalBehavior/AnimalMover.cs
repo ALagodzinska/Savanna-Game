@@ -1,12 +1,13 @@
 ﻿namespace Savanna.Logic_Layer
 {
+    using AnimalBehaviorInterfaces;
     using Savanna.Entities.Animals;
     using Savanna.Entities.GameField;
 
     /// <summary>
     /// Class responsible for animal placement on a game field.
     /// </summary>
-    public class AnimalMover
+    public class AnimalMover: IAnimalMover
     {
         /// <summary>
         /// Height of game field.
@@ -29,12 +30,12 @@
         /// <param name="fieldHeight">Height of the game field.</param>
         /// <param name="fieldWidth">Width of the game field.</param>
         /// <param name="animals">List of animals.</param>
-        public AnimalMover(int fieldHeight, int fieldWidth, List<Animal> animals)
-        {
-            FieldHeight = fieldHeight;
-            FieldWidth = fieldWidth;
-            Animals = animals;
-        }
+        //public AnimalMover(int fieldHeight, int fieldWidth, List<Animal> animals)
+        //{
+        //    FieldHeight = fieldHeight;
+        //    FieldWidth = fieldWidth;
+        //    Animals = animals;
+        //}
 
         /// <summary>
         /// Randomly set new animal current position.
@@ -116,7 +117,7 @@
         /// </summary>
         /// <param name="animal">Animal whose nearest animals are to be found.</param>
         /// <returns>Returns list of animals that are in a vison range of one animal.</returns>
-        private List<Animal> AnimalsInVisionRange(Animal animal)
+        public List<Animal> AnimalsInVisionRange(Animal animal)
         {
             Coordinates coordinates = new();
             List<Animal> closestAnimalList = new List<Animal>();
@@ -200,7 +201,7 @@
         /// <param name="antelopesAround">List of antelopes in animals vision range.</param>
         /// <param name="currentAnimal">Animal.</param>
         /// <returns>Closest antelope to an animal.</returns>
-        private Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
+        public Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
         {
             double minDistance = currentAnimal.VisionRange * 2;
             Coordinates closestAnimalCoordinats = new();
@@ -224,7 +225,7 @@
         /// </summary>
         /// <param name="moves">List with available places to move for an animal.</param>
         /// <returns>Coordinates for next move.</returns>
-        private Coordinates RandomMovePosition(List<Coordinates> moves)
+        public Coordinates RandomMovePosition(List<Coordinates> moves)
         {
             Random random = new Random();
             var moveIndex = random.Next(moves.Count);
@@ -253,7 +254,7 @@
         /// <param name="lionToMove">Lion to make a move.</param>
         /// <param name="closestAntelope">Nearest antelope in vision range.</param>
         /// <param name="possibleSpacesToMove">List of possible places to make a move.</param>
-        private void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove)
+        public void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove)
         {
             var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove.CurrentPosition);
 
@@ -276,7 +277,7 @@
         /// </summary>
         /// <param name="lion">Lion.</param>
         /// <param name="antelope">Antelope near lion.</param>
-        private void LionEatAntelope(Lion lion, Antelope antelope)
+        public void LionEatAntelope(Lion lion, Antelope antelope)
         {
             lion.NextPosition = antelope.CurrentPosition;
             lion.DoesAte = true;
@@ -290,7 +291,7 @@
         /// <param name="freeSpaceToMove">Possibilities for lion to move.</param>
         /// <param name="closestAntelope">Closest antelope to lion.</param>
         /// <returns>Coordinates for lion to make next move.</returns>
-        private Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope)
+        public Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope)
         {
             double minDistance = 10;
             Coordinates closestMoveCoordinate = new();
@@ -315,7 +316,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to make a move.</param>
         /// <returns>Coordinates for antelope to run from lions.</returns>
-        private Coordinates GetFarsetSpaceFromLion(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
+        public Coordinates GetFarsetSpaceFromLion(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             double distanceMaxSum = 0;
             double distanceSum = 0;
@@ -349,7 +350,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to find distances.</param>
         /// <returns>List of arrays with distance points till lions on each free space for antelope to move.</returns>
-        private List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
+        public List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             var distances = new List<double[]>();
 

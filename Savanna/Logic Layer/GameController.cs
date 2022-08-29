@@ -98,7 +98,7 @@
             do
             {
                 Thread.Sleep(1000);
-                gameLogic.AnimalsActionsOnMove();
+                gameLogic.ActionsOnIteration();
 
                 ConsoleKey? consoleKey = Console.KeyAvailable ? Console.ReadKey(true).Key : null;
                 if (consoleKey != null)

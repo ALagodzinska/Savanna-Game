@@ -1,36 +1,37 @@
 ﻿namespace Savanna.Logic_Layer
 {
+    using AnimalBehaviorInterfaces;
     using Savanna.Entities.Animals;
     using Savanna.Entities.GameField;
 
     /// <summary>
     /// Responsible for animal pair creation logic and making animal babies.
     /// </summary>
-    public class AnimalPairLogic
+    public class AnimalPairLogic: IAnimalPairLogic
     {
         /// <summary>
         /// List of animal pairs.
         /// </summary>
-        public List<AnimalPair> animalPairs = new();
+        public List<AnimalPair> AnimalPairs => new();
 
         /// <summary>
         /// List of animal babies.
         /// </summary>
-        public List<Animal> animalsToBeBorn = new();
+        public List<Animal> AnimalsToBeBorn => new();
 
         /// <summary>
         /// Field to use AnimalMover logic.
         /// </summary>
-        AnimalMover AnimalMover;
+        public IAnimalMover AnimalMovers { get; set; }
 
         /// <summary>
         /// Assign value to class properties.
         /// </summary>
         /// <param name="animalMover">Instance of AnimalMover class.</param>
-        public AnimalPairLogic(AnimalMover animalMover)
-        {
-            AnimalMover = animalMover;
-        }
+        //public AnimalPairLogic(IAnimalMover animalMover)
+        //{
+        //    AnimalMovers = animalMover;
+        //}
 
         /// <summary>
         /// Applay pairs logic.
@@ -41,12 +42,12 @@
             ActionForPairsOnMove();
 
             //create couple if together in this and next iteration
-            foreach (var animal in AnimalMover.Animals)
+            foreach (var animal in AnimalMovers.Animals)
             {
                 CheckIfAnimalHavePair(animal);
             }
 
-            animalPairs.RemoveAll(c => c.DoesBrokeUp == true);
+            AnimalPairs.RemoveAll(c => c.DoesBrokeUp == true);
         }
 
         /// <summary>
@@ -54,14 +55,14 @@
         /// </summary>
         public void AddNewbornsToGame()
         {
-            if (animalsToBeBorn.Count > 0)
+            if (AnimalsToBeBorn.Count > 0)
             {
-                foreach (var newborn in animalsToBeBorn)
+                foreach (var newborn in AnimalsToBeBorn)
                 {
-                    AnimalMover.Animals.Add(newborn);
+                    AnimalMovers.Animals.Add(newborn);
                 }
 
-                animalsToBeBorn.Clear();
+                AnimalsToBeBorn.Clear();
             }
         }
 
@@ -79,10 +80,10 @@
                 {
                     var animalPair = new AnimalPair(mainAnimal, closeAnimal);
 
-                    if (animalPairs.FirstOrDefault(c => c.AnimalWithLargestID == animalPair.AnimalWithLargestID
+                    if (AnimalPairs.FirstOrDefault(c => c.AnimalWithLargestID == animalPair.AnimalWithLargestID
                     && c.AnimalWithSmallestID == animalPair.AnimalWithSmallestID) == null)
                     {
-                        var distanceOnNextMove = AnimalMover.FindDistanceBetweenTwoCoordinates(closeAnimal.NextPosition, mainAnimal.NextPosition);
+                        var distanceOnNextMove = AnimalMovers.FindDistanceBetweenTwoCoordinates(closeAnimal.NextPosition, mainAnimal.NextPosition);
 
                         if (distanceOnNextMove == 1 && mainAnimal.IsAlive == true && closeAnimal.IsAlive == true)
                         {
@@ -99,7 +100,7 @@
         /// <param name="animalPair">Animal pair.</param>
         public void AddNewPair(AnimalPair animalPair)
         {
-            animalPairs.Add(animalPair);
+            AnimalPairs.Add(animalPair);
         }
 
         /// <summary>
@@ -107,11 +108,11 @@
         /// </summary>
         public void ActionForPairsOnMove()
         {
-            if (animalPairs.Count > 0)
+            if (AnimalPairs.Count > 0)
             {
-                foreach (var couple in animalPairs)
+                foreach (var couple in AnimalPairs)
                 {
-                    var distanceOnMove = AnimalMover.FindDistanceBetweenTwoCoordinates(couple.AnimalWithLargestID.CurrentPosition, couple.AnimalWithSmallestID.CurrentPosition);
+                    var distanceOnMove = AnimalMovers.FindDistanceBetweenTwoCoordinates(couple.AnimalWithLargestID.CurrentPosition, couple.AnimalWithSmallestID.CurrentPosition);
 
                     if (distanceOnMove == 1)
                     {
@@ -135,7 +136,7 @@
         /// </summary>
         /// <param name="animal">Animal to find neighbours for.</param>
         /// <returns>List of animals nearby.</returns>
-        private List<Animal> AnimalsNearbyWithSameType(Animal animal)
+        public List<Animal> AnimalsNearbyWithSameType(Animal animal)
         {
             Coordinates coordinates = new Coordinates();
             List<Animal> closestAnimalList = new List<Animal>();
@@ -147,17 +148,17 @@
                     coordinates.X = w;
                     coordinates.Y = h;
 
-                    var distance = AnimalMover.FindDistanceBetweenTwoCoordinates(coordinates, animal.CurrentPosition);
+                    var distance = AnimalMovers.FindDistanceBetweenTwoCoordinates(coordinates, animal.CurrentPosition);
 
-                    if (h > AnimalMover.FieldHeight || h < 0
-                        || w > AnimalMover.FieldWidth || w < 0
+                    if (h > AnimalMovers.FieldHeight || h < 0
+                        || w > AnimalMovers.FieldWidth || w < 0
                         || h == animal.CurrentPosition.Y && w == animal.CurrentPosition.X
                         || distance > 1)
                     {
                         continue;
                     }
 
-                    var foundAnimal = AnimalMover.GetAnimalByCurrentCoordinates(coordinates);
+                    var foundAnimal = AnimalMovers.GetAnimalByCurrentCoordinates(coordinates);
 
                     if (foundAnimal != null && foundAnimal.GetType() == animal.GetType())
                     {
@@ -173,7 +174,7 @@
         /// Creates new animal and add baby to the newborn list.
         /// </summary>
         /// <param name="animalPair">Couple to have a baby.</param>
-        private void AnimalToBeBorn(AnimalPair animalPair)
+        public void AnimalToBeBorn(AnimalPair animalPair)
         {
             //return place for animal to be born 
             var bornAnimalCoordinates = GetPlaceToBorn(animalPair.AnimalWithLargestID, animalPair.AnimalWithSmallestID);
@@ -184,13 +185,13 @@
                 {
                     var createdLion = new Lion();
                     createdLion.CurrentPosition = bornAnimalCoordinates;
-                    animalsToBeBorn.Add(createdLion);
+                    AnimalsToBeBorn.Add(createdLion);
                 }
                 else
                 {
                     var createdAntelope = new Antelope();
                     createdAntelope.CurrentPosition = bornAnimalCoordinates;
-                    animalsToBeBorn.Add(createdAntelope);
+                    AnimalsToBeBorn.Add(createdAntelope);
                 }
             }            
         }
@@ -201,7 +202,7 @@
         /// <param name="spacesAroundFirstParent">List of free spaces to move of first parent.</param>
         /// <param name="spacesAroundSecondParent">List of free spaces to move of second parent.</param>
         /// <returns>List of unrepetitive places to place a newborn animal to.</returns>
-        private List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
+        public List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
         {
             for (int i = 0; i < spacesAroundFirstParent.Count; i++)
             {
@@ -225,10 +226,10 @@
         /// <param name="oneParent">One animal from the pair.</param>
         /// <param name="secondParent">Second animal from the pair.</param>
         /// <returns>Coordinates for newborn animals position on game field.</returns>
-        private Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
+        public Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
-            var animalMoves = AnimalMover.PossibleMoves(oneParent);
-            var sameAnimalTypeMoves = AnimalMover.PossibleMoves(secondParent);
+            var animalMoves = AnimalMovers.PossibleMoves(oneParent);
+            var sameAnimalTypeMoves = AnimalMovers.PossibleMoves(secondParent);
 
             var listWithFreeSpaces = GetListWithUniqueFreeSpacesAroundParents(animalMoves, sameAnimalTypeMoves);
 
@@ -240,7 +241,7 @@
             {
                 foreach (var move in listWithFreeSpaces)
                 {
-                    if (AnimalMover.DoesPlaceWillBeTakenInNextStep(move))
+                    if (AnimalMovers.DoesPlaceWillBeTakenInNextStep(move))
                     {
                         listWithFreeSpaces.Remove(move);
                     }
