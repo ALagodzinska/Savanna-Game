@@ -4,17 +4,13 @@
     using System.Resources;
     using System.Reflection;
     using Savanna.Menu;
+    using Savanna.Resources;
 
     /// <summary>
     /// Controls main aspects of the game.
     /// </summary>
     public class GameController
     {
-        /// <summary>
-        /// Resource data.
-        /// </summary>
-        ResourceManager resourceManager = new ResourceManager("Savanna.Resources.ResourceFile", Assembly.GetExecutingAssembly());
-
         /// <summary>
         /// Stores main game logic.
         /// </summary>
@@ -35,7 +31,7 @@
         /// </summary>
         public GameController()
         {
-            menu = new GameMenu(resourceManager.GetString("MainMenuIntro"));
+            menu = new GameMenu(ResourceFile.MainMenuIntro);
         }
 
         /// <summary>
@@ -70,7 +66,7 @@
         public void DisplayGameRules()
         {
             Console.Clear();
-            Console.WriteLine(resourceManager.GetString("GameRules"));
+            Console.WriteLine(ResourceFile.GameRules);
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
