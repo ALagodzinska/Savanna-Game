@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savanna", "Savanna\Savanna.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalBehaviorPlugin", "AnimalBehavior\AnimalBehaviorPlugin.csproj", "{1C967B21-AC00-4087-82C3-AE628B373D45}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "AnimalBehaviorInterfaces\Interfaces.csproj", "{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalBehaviorInterfaces", "AnimalBehaviorInterfaces\AnimalBehaviorInterfaces.csproj", "{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

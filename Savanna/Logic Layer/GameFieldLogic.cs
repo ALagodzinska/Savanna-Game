@@ -20,17 +20,8 @@
         /// </summary>
         GameField GameField;
 
-        ///// <summary>
-        ///// Responsible for animal move and animal location on game field.
-        ///// </summary>
-        //AnimalMover AnimalMover;
-
-        ///// <summary>
-        ///// Pair creation logic and newborn logic.
-        ///// </summary>
-        //AnimalPairLogic AnimalPairLogic;
-
         IAnimalMover _animalMoverPlugin = null;
+
         IAnimalPairLogic _animalPairLogicPlugin = null;
 
         /// <summary>
@@ -42,9 +33,7 @@
 
             Animals = new List<Animal>();
             GameField = gameField;
-            CallExtensions();
-            //AnimalMover = new AnimalMover(gameField.Height, gameField.Width, Animals);
-            //AnimalPairLogic = new AnimalPairLogic(AnimalMover);            
+            ReadExtensions();           
         }
 
         /// <summary>
@@ -93,7 +82,6 @@
         public void SetAnimalPosition(Animal animal)
         {
             _animalMoverPlugin.SetNewAnimalCurrentPosition(animal);
-            //AnimalMover.SetNewAnimalCurrentPosition(animal);
             DrawAnimal(animal);
         }
 
@@ -164,23 +152,19 @@
             foreach (var animal in Animals)
             {
                 _animalMoverPlugin.SetNextPositionForAnimal(animal);
-                //AnimalMover.SetNextPositionForAnimal(animal);
             }
 
             //apply pair logic, create pairs
             _animalPairLogicPlugin.AnimalPairsCreated();
-            //AnimalPairLogic.AnimalPairsCreated();
 
             //make move for each animal
             foreach (var animal in Animals)
             {
                 _animalMoverPlugin.MakeMove(animal);
-                //AnimalMover.MakeMove(animal);
             }
 
             //add newborns in this round to a game
             _animalPairLogicPlugin.AddNewbornsToGame();
-            //AnimalPairLogic.AddNewbornsToGame();
 
             //delete all dead animals
             Animals.RemoveAll(a => a.IsAlive == false);
@@ -188,29 +172,8 @@
             DrawGame();
         }
 
-        public void CallExtensions()
+        public void ReadExtensions()
         {
-            try
-            {
-                _animalMoverPlugin = ReadAnimalMoverExtensions();
-                _animalPairLogicPlugin = ReadAnimalPairLogicExtensions();
-            }
-            catch (Exception exeption)
-            {
-                Console.Clear();
-                Console.Write("Error info:" + exeption.Message);
-                throw;
-            }
-                _animalMoverPlugin.Animals = Animals;
-                _animalMoverPlugin.FieldHeight = GameField.Height;
-                _animalMoverPlugin.FieldWidth = GameField.Width;
-            
-            _animalPairLogicPlugin.AnimalMovers = _animalMoverPlugin;
-        }
-
-        public IAnimalMover ReadAnimalMoverExtensions()
-        {
-            var pluginsLists = new List<IAnimalMover>();
             // 1- Read the dll files from the extensions folder.
             var files = Directory.GetFiles("extensions", "*.dll");
 
@@ -220,46 +183,22 @@
                 var assembly = Assembly.LoadFile(Path.Combine(Directory.GetCurrentDirectory(), file));
 
                 // 3- Extract all the types that implements IPlugin
-                var pluginTypes = assembly.GetTypes()
+                var pluginAnimalMover = assembly.GetTypes()
                             .Where(type => typeof(IAnimalMover).IsAssignableFrom(type)
-                            && !type.IsInterface).ToArray();
+                            && !type.IsInterface).First();
 
-                foreach (var pluginType in pluginTypes)
-                {
-                    // 4- Create an instance from the extracted type. 
-                    var pluginInstance = Activator.CreateInstance(pluginType) as IAnimalMover;
-                    pluginsLists.Add(pluginInstance);
-                }
-            }
-
-            return pluginsLists.First();
-        }
-
-        public IAnimalPairLogic ReadAnimalPairLogicExtensions()
-        {
-            var pluginsLists = new List<IAnimalPairLogic>();
-            // 1- Read the dll files from the extensions folder.
-            var files = Directory.GetFiles("extensions", "*.dll");
-
-            // 2- Read the assembly from files.
-            foreach (var file in files)
-            {
-                var assembly = Assembly.LoadFile(Path.Combine(Directory.GetCurrentDirectory(), file));
-
-                // 3- Extract all the types that implements IPlugin
-                var pluginTypes = assembly.GetTypes()
+                var pluginAnimalPairLogic = assembly.GetTypes()
                             .Where(type => typeof(IAnimalPairLogic).IsAssignableFrom(type)
-                            && !type.IsInterface).ToArray();
+                            && !type.IsInterface).First();
 
-                foreach (var pluginType in pluginTypes)
-                {
-                    // 4- Create an instance from the extracted type. 
-                    var pluginInstance = Activator.CreateInstance(pluginType) as IAnimalPairLogic;
-                    pluginsLists.Add(pluginInstance);
-                }
+                // 4- Create an instance from the extracted type.
+                var pluginAnimalMoverInstance = Activator.CreateInstance(pluginAnimalMover, GameField.Height, GameField.Width, Animals) as IAnimalMover;
+                var pluginAnimalPairLogicInstance = Activator.CreateInstance(pluginAnimalPairLogic, pluginAnimalMoverInstance) as IAnimalPairLogic;
+
+                // 5- Assign values to fields.
+                _animalMoverPlugin = pluginAnimalMoverInstance;
+                _animalPairLogicPlugin = pluginAnimalPairLogicInstance;
             }
-
-            return pluginsLists.First();
         }
     }
 }

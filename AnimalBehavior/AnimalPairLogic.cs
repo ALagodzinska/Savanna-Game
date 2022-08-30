@@ -28,10 +28,10 @@
         /// Assign value to class properties.
         /// </summary>
         /// <param name="animalMover">Instance of AnimalMover class.</param>
-        //public AnimalPairLogic(IAnimalMover animalMover)
-        //{
-        //    AnimalMovers = animalMover;
-        //}
+        public AnimalPairLogic(IAnimalMover animalMover)
+        {
+            AnimalMovers = animalMover;
+        }
 
         /// <summary>
         /// Applay pairs logic.

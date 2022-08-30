@@ -1,6 +1,4 @@
-﻿using AnimalBehaviorInterfaces.Entities;
-using Interfaces.GameField;
-using Savanna.Entities.Animals;
+﻿using Savanna.Entities.Animals;
 using Savanna.Entities.GameField;
 
 namespace AnimalBehaviorInterfaces

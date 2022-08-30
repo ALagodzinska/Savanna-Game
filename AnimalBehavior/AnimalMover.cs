@@ -30,12 +30,12 @@
         /// <param name="fieldHeight">Height of the game field.</param>
         /// <param name="fieldWidth">Width of the game field.</param>
         /// <param name="animals">List of animals.</param>
-        //public AnimalMover(int fieldHeight, int fieldWidth, List<Animal> animals)
-        //{
-        //    FieldHeight = fieldHeight;
-        //    FieldWidth = fieldWidth;
-        //    Animals = animals;
-        //}
+        public AnimalMover(int fieldHeight, int fieldWidth, List<Animal> animals)
+        {
+            FieldHeight = fieldHeight;
+            FieldWidth = fieldWidth;
+            Animals = animals;
+        }
 
         /// <summary>
         /// Randomly set new animal current position.
