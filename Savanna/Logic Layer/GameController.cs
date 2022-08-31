@@ -19,7 +19,7 @@
         /// <summary>
         /// Stores menu data.
         /// </summary>
-        GameMenu menu;
+        SpecificGameMenu menu;
 
         /// <summary>
         /// Variable used to declare if a user exits an application.
@@ -31,7 +31,7 @@
         /// </summary>
         public GameController()
         {
-            menu = new GameMenu(ResourceFile.MainMenuIntro);
+            menu = new SpecificGameMenu(ResourceFile.MainMenuIntro);
         }
 
         /// <summary>
@@ -49,11 +49,11 @@
 
                 switch (selection.Index)
                 {
-                    case MainMenuOptions.PlayGame:
+                    case (int)MainMenuOptions.PlayGame:
                         DisplayGameRules();
                         GameActions();
                         break;
-                    case MainMenuOptions.ExitGame:
+                    case (int)MainMenuOptions.ExitGame:
                         ExitGame();
                         break;
                 }
