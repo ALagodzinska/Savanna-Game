@@ -12,12 +12,12 @@
         /// <summary>
         /// List of animal pairs.
         /// </summary>
-        public List<AnimalPair> AnimalPairs => new();
+        public List<AnimalPair> AnimalPairs { get; set; }
 
         /// <summary>
         /// List of animal babies.
         /// </summary>
-        public List<Animal> AnimalsToBeBorn => new();
+        public List<Animal> AnimalsToBeBorn { get; set; }
 
         /// <summary>
         /// Field to use AnimalMover logic.
@@ -31,6 +31,8 @@
         public AnimalPairLogic(IAnimalMover animalMover)
         {
             AnimalMovers = animalMover;
+            AnimalPairs = new();
+            AnimalsToBeBorn = new();
         }
 
         /// <summary>

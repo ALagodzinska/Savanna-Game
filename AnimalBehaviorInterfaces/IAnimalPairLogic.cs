@@ -5,9 +5,9 @@ namespace AnimalBehaviorInterfaces
 {
     public interface IAnimalPairLogic
     {
-        List<AnimalPair> AnimalPairs { get;}
+        List<AnimalPair> AnimalPairs { get; set; }
 
-        List<Animal> AnimalsToBeBorn { get;}
+        List<Animal> AnimalsToBeBorn { get; set; }
 
         IAnimalMover AnimalMovers { get; set; }
 
