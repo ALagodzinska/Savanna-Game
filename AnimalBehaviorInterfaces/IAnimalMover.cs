@@ -1,8 +1,8 @@
-﻿using Savanna.Entities.Animals;
-using Savanna.Entities.GameField;
-
-namespace AnimalBehaviorInterfaces
+﻿namespace AnimalBehaviorInterfaces
 {
+    using Savanna.Entities.Animals;
+    using Savanna.Entities.GameField;
+
     public interface IAnimalMover
     {
         int FieldHeight { get; set; }

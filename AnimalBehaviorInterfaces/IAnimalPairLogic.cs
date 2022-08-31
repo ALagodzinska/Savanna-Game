@@ -1,8 +1,8 @@
 ﻿using Savanna.Entities.Animals;
-using Savanna.Entities.GameField;
-
 namespace AnimalBehaviorInterfaces
 {
+    using Savanna.Entities.GameField;
+
     public interface IAnimalPairLogic
     {
         List<AnimalPair> AnimalPairs { get; set; }

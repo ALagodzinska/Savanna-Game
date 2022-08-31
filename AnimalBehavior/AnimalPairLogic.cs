@@ -25,7 +25,7 @@
         public IAnimalMover AnimalMovers { get; set; }
 
         /// <summary>
-        /// Assign value to class properties.
+        /// Assign values to class properties.
         /// </summary>
         /// <param name="animalMover">Instance of AnimalMover class.</param>
         public AnimalPairLogic(IAnimalMover animalMover)

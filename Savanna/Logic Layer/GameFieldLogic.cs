@@ -20,8 +20,14 @@
         /// </summary>
         GameField GameField;
 
+        /// <summary>
+        /// Animal moving logic plugin.
+        /// </summary>
         IAnimalMover _animalMoverPlugin = null;
 
+        /// <summary>
+        /// Animal pair logic plugin.
+        /// </summary>
         IAnimalPairLogic _animalPairLogicPlugin = null;
 
         /// <summary>
@@ -172,6 +178,9 @@
             DrawGame();
         }
 
+        /// <summary>
+        /// Read extensions and assign values to plugins.
+        /// </summary>
         public void ReadExtensions()
         {
             // 1- Read the dll files from the extensions folder.
