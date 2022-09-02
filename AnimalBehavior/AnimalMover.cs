@@ -7,7 +7,7 @@
     /// <summary>
     /// Class responsible for animal placement on a game field.
     /// </summary>
-    public class AnimalMover: IAnimalMover
+    public class AnimalMover : IAnimalMover
     {
         /// <summary>
         /// Height of game field.
@@ -43,18 +43,21 @@
         /// <param name="animal">Created animal.</param>
         public void SetNewAnimalCurrentPosition(Animal animal)
         {
-            Random random = new Random();
-
-            while (animal.CurrentPosition == null)
+            if (Animals.Count < (FieldHeight * FieldWidth))
             {
-                var randomWidthPosition = random.Next(0, FieldWidth - 1);
-                var randomHeightPosition = random.Next(0, FieldHeight - 1);
-                Coordinates coordinates = new Coordinates { X = randomWidthPosition, Y = randomHeightPosition };
+                Random random = new Random();
 
-                bool isTaken = GetAnimalByCurrentCoordinates(coordinates) != null ? true : false;
-                if (!isTaken)
+                while (animal.CurrentPosition == null)
                 {
-                    animal.CurrentPosition = coordinates;
+                    var randomWidthPosition = random.Next(0, FieldWidth - 1);
+                    var randomHeightPosition = random.Next(0, FieldHeight - 1);
+                    Coordinates coordinates = new Coordinates { X = randomWidthPosition, Y = randomHeightPosition };
+
+                    bool isTaken = DoesPlaceWillBeTakenInNextStep(coordinates);
+                    if (!isTaken)
+                    {
+                        animal.CurrentPosition = coordinates;
+                    }
                 }
             }
         }
@@ -110,6 +113,10 @@
 
                 animal.NextPosition = lions.Count != 0 ? GetFarsetSpaceFromLion(movePossibility, lions, (Antelope)animal) : RandomMovePosition(movePossibility);
             }
+            else
+            {
+                throw new Exception("Animal has no type!");
+            }
         }
 
         /// <summary>
@@ -121,6 +128,11 @@
         {
             Coordinates coordinates = new();
             List<Animal> closestAnimalList = new List<Animal>();
+
+            if (animal.GetType() != typeof(Lion) && animal.GetType() != typeof(Antelope) || animal.CurrentPosition == null)
+            {
+                return closestAnimalList;
+            }
 
             for (int h = animal.CurrentPosition.Y - animal.VisionRange; h <= animal.CurrentPosition.Y + animal.VisionRange; h++)
             {
@@ -159,6 +171,11 @@
         {
             List<Coordinates> moves = new();
 
+            if(animal.CurrentPosition == null || animal.CurrentPosition.Y > FieldHeight || animal.CurrentPosition.X > FieldWidth)
+            {
+                return moves;
+            }
+
             for (int h = animal.CurrentPosition.Y - 1; h < animal.CurrentPosition.Y + 2; h++)
             {
                 for (int w = animal.CurrentPosition.X - 1; w < animal.CurrentPosition.X + 2; w++)
@@ -168,7 +185,6 @@
                     if (h >= FieldHeight || h < 0
                         || w >= FieldWidth || w < 0
                         || h == animal.CurrentPosition.Y && w == animal.CurrentPosition.X
-                        || (GetAnimalByCurrentCoordinates(foundCoordinates) != null)
                         || DoesPlaceWillBeTakenInNextStep(foundCoordinates))
                     {
                         continue;
@@ -203,6 +219,11 @@
         /// <returns>Closest antelope to an animal.</returns>
         public Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
         {
+            if(currentAnimal.VisionRange == null || currentAnimal.CurrentPosition == null)
+            {
+                throw new Exception("Animal has null parameters VisionRange or/and CurrentPosition!");
+            }
+
             double minDistance = currentAnimal.VisionRange * 2;
             Coordinates closestAnimalCoordinats = new();
 
@@ -227,6 +248,11 @@
         /// <returns>Coordinates for next move.</returns>
         public Coordinates RandomMovePosition(List<Coordinates> moves)
         {
+            if(moves.Count == 0)
+            {
+                throw new Exception("List with possible moves is empty, nothing to return.");
+            }
+
             Random random = new Random();
             var moveIndex = random.Next(moves.Count);
 
@@ -406,5 +432,5 @@
                 animal.IsAlive = false;
             }
         }
-    }    
+    }
 }

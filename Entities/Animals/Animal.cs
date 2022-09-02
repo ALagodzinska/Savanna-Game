@@ -54,6 +54,7 @@
         public Animal()
         {
             ID = Interlocked.Increment(ref globalAnimalId);
+            IsAlive = true;
         }
     }
 }

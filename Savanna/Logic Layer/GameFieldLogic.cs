@@ -144,10 +144,7 @@
         /// Check if there is enough free space to add new animal.
         /// </summary>
         /// <returns></returns>
-        public bool DoesGameFieldHaveFreeSpaces()
-        {
-            return Animals.Count <= (GameField.Height * GameField.Width) / 2;
-        }
+        public bool DoesGameFieldHaveFreeSpaces() => Animals.Count < (GameField.Height * GameField.Width);
 
         /// <summary>
         /// Does all animals actions on each iteration.
