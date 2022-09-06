@@ -219,9 +219,9 @@
         /// <returns>Closest antelope to an animal.</returns>
         public Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
         {
-            if(currentAnimal.VisionRange == null || currentAnimal.CurrentPosition == null)
+            if(currentAnimal.CurrentPosition == null)
             {
-                throw new Exception("Animal has null parameters VisionRange or/and CurrentPosition!");
+                throw new Exception("Animal has null parameter CurrentPosition!");
             }
 
             double minDistance = currentAnimal.VisionRange * 2;
@@ -282,6 +282,25 @@
         /// <param name="possibleSpacesToMove">List of possible places to make a move.</param>
         public void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove)
         {
+            var exceptions = new List<Exception>();
+
+            if (lionToMove.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Current Position for lion is not set."));
+            }
+
+            if (closestAntelope.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Next Position for antelope is not set."));
+            }
+
+            // If we have any exceptions...
+            if (exceptions.Any())
+            {
+                // throw them all
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
             var distance = FindDistanceBetweenTwoCoordinates(closestAntelope.CurrentPosition, lionToMove.CurrentPosition);
 
             if (distance == 1 && !DoesPlaceWillBeTakenInNextStep(closestAntelope.CurrentPosition))
@@ -294,7 +313,7 @@
             }
             else
             {
-                lionToMove.NextPosition = GetClosestSpaceToAntelope(possibleSpacesToMove, closestAntelope);
+                lionToMove.NextPosition = GetClosestSpaceToAntelope(possibleSpacesToMove, closestAntelope, lionToMove);
             }
         }
 
@@ -305,10 +324,18 @@
         /// <param name="antelope">Antelope near lion.</param>
         public void LionEatAntelope(Lion lion, Antelope antelope)
         {
-            lion.NextPosition = antelope.CurrentPosition;
-            lion.DoesAte = true;
-            lion.Health += 10;
-            antelope.IsAlive = false;
+            if (antelope.CurrentPosition == null)
+            {
+                throw new Exception("Antelopes CurrentPosition is null!");
+            }
+
+            if (antelope.IsAlive == true)
+            {
+                lion.NextPosition = antelope.CurrentPosition;
+                lion.DoesAte = true;
+                lion.Health += 10;
+                antelope.IsAlive = false;
+            }            
         }
 
         /// <summary>
@@ -317,9 +344,28 @@
         /// <param name="freeSpaceToMove">Possibilities for lion to move.</param>
         /// <param name="closestAntelope">Closest antelope to lion.</param>
         /// <returns>Coordinates for lion to make next move.</returns>
-        public Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope)
+        public Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope, Lion lion)
         {
-            double minDistance = 10;
+            var exceptions = new List<Exception>();
+
+            if (freeSpaceToMove.Count == 0)
+            {
+                exceptions.Add(new Exception("List with spaces to move is empty."));
+            }
+
+            if (closestAntelope.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Antelopes position is not set."));
+            }
+
+            // If we have any exceptions...
+            if (exceptions.Any())
+            {
+                // throw them all
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
+            double minDistance = lion.VisionRange * 2;
             Coordinates closestMoveCoordinate = new();
 
             foreach (var space in freeSpaceToMove)
@@ -423,6 +469,25 @@
         /// <param name="animal">Animal to move.</param>
         public void MakeMove(Animal animal)
         {
+            var exceptions = new List<Exception>();
+
+            if (animal.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Current Position for an animal is not set."));
+            }
+
+            if (animal.NextPosition == null)
+            {
+                exceptions.Add(new Exception("Next Position for an animal is not set."));
+            }
+
+            // If we have any exceptions...
+            if (exceptions.Any())
+            {
+                // throw them all
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
             animal.CurrentPosition = animal.NextPosition;
             animal.NextPosition = null;
 

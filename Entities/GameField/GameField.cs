@@ -30,8 +30,8 @@
         /// </summary>
         public GameField()
         {
-            Height = 2;
-            Width = 2;
+            Height = 10;
+            Width = 10;
             TopPosition = 5;
             BorderColor = ConsoleColor.DarkGreen;
         }

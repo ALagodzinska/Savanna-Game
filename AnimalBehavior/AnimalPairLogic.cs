@@ -100,10 +100,7 @@
         /// Adds new animal pair to an animal pair list.
         /// </summary>
         /// <param name="animalPair">Animal pair.</param>
-        public void AddNewPair(AnimalPair animalPair)
-        {
-            AnimalPairs.Add(animalPair);
-        }
+        public void AddNewPair(AnimalPair animalPair) => AnimalPairs.Add(animalPair);
 
         /// <summary>
         /// Checks if animals stay together for the next round.
@@ -140,6 +137,23 @@
         /// <returns>List of animals nearby.</returns>
         public List<Animal> AnimalsNearbyWithSameType(Animal animal)
         {
+            var exceptions = new List<Exception>();
+
+            if (animal.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Current Position for animal is not set."));
+            }
+
+            if (animal.GetType() == typeof(Animal))
+            {
+                exceptions.Add(new Exception("Type for animal is not set."));
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
             Coordinates coordinates = new Coordinates();
             List<Animal> closestAnimalList = new List<Animal>();
 
