@@ -15,8 +15,8 @@
         /// </summary>
         public Antelope()
         {
-            Health = 15;
-            VisionRange = 4;
+            Health = 30;
+            VisionRange = 3;
         }
 
         /// <summary>

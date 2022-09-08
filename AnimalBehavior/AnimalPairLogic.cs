@@ -80,6 +80,11 @@
             {
                 foreach (var closeAnimal in listWithCloseAnimalsOneType)
                 {
+                    if(closeAnimal.NextPosition == null || mainAnimal.NextPosition == null)
+                    {
+                        throw new Exception("Animals next position is not set.");
+                    }
+
                     var animalPair = new AnimalPair(mainAnimal, closeAnimal);
 
                     if (AnimalPairs.FirstOrDefault(c => c.AnimalWithLargestID == animalPair.AnimalWithLargestID
@@ -244,6 +249,23 @@
         /// <returns>Coordinates for newborn animals position on game field.</returns>
         public Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
+            var exceptions = new List<Exception>();
+
+            if (oneParent.CurrentPosition == null || secondParent.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Current Position for animal is not set."));
+            }
+
+            if (oneParent.GetType() == typeof(Animal) || secondParent.GetType() == typeof(Animal))
+            {
+                exceptions.Add(new Exception("Type for animal is not set."));
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
             var animalMoves = AnimalMovers.PossibleMoves(oneParent);
             var sameAnimalTypeMoves = AnimalMovers.PossibleMoves(secondParent);
 

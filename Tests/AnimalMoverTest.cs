@@ -51,7 +51,7 @@ namespace Tests
                 new Animal { CurrentPosition = new Coordinates{ X = 1, Y = 0} },
                 new Animal { CurrentPosition = new Coordinates{ X = 1, Y = 1} },
             };
-            var mover = new AnimalMover(2, 2, listOfAnimals);            
+            var mover = new AnimalMover(2, 2, listOfAnimals);
             var animal = new Animal();
             // generate current position
             mover.SetNewAnimalCurrentPosition(animal);
@@ -291,7 +291,7 @@ namespace Tests
                 new Animal { NextPosition = new Coordinates{ X = 10, Y = 10} },
             };
             var mover = new AnimalMover(10, 10, new List<Animal>());
-            var animal = new Animal() { CurrentPosition = new Coordinates { X = 11, Y = 10} };
+            var animal = new Animal() { CurrentPosition = new Coordinates { X = 11, Y = 10 } };
             // get possible moves
             var possibleMoves = mover.PossibleMoves(animal);
             // check the list is not null but is empty
@@ -413,7 +413,7 @@ namespace Tests
                 new Coordinates{ X = 4, Y = 2},
             };
             var lion = new Lion();
-            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 5, Y = 5} };
+            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 5, Y = 5 } };
             // find closest space
             var closestPlace = mover.GetClosestSpaceToAntelope(listOfSpacesToMove, antelope, lion);
             // check if not null
@@ -452,51 +452,10 @@ namespace Tests
         }
 
         [Fact]
-        public void ReturnListOfDistancePoints_ListOfPoints_ReturnExpectedListOfPoints()
-        {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
-            var spacesForMove = new List<Coordinates>
-            {
-                new Coordinates{ X = 3, Y = 2},
-                new Coordinates{ X = 1, Y = 3},
-
-            };
-            var lions = new List<Lion>
-            {
-                new Lion{ CurrentPosition = new Coordinates{ X = 4, Y = 2}},
-                new Lion{ CurrentPosition = new Coordinates{ X = 1, Y = 1}}
-            };
-            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
-
-            var distancePoints = mover.ReturnListOfDistancePoints(spacesForMove, lions, antelope);
-
-            //00 10  20  30 40 50
-            //01 11  21  31 41 51
-            //02 12 (22) 32 42 52
-            //03 13  23  33 43 53
-            //04 14  24  34 44 54
-            //05 15  25  35 45 55
-
-            // 0.5 - nothing chdnged or got smaller,
-            // 4 - run from the closest lion,
-            // 3 - run from lion that stays on close diagonal
-            // 1.5 - run from lion that has two cells to catch antelope
-            // 1 - run from any farest lion
-
-            var expectedList = new List<double[]>
-            {
-                // points for first lion
-                new double[]{0.5, 1.5},
-                // points for second lion
-                new double[]{3, 3},
-            };
-        }
-
-        [Fact]
         public void LionEatAntelope_ExpectedAnimals_UpdatedAnimalProperties()
         {
             var mover = new AnimalMover(10, 10, new List<Animal>());
-            var lion = new Lion{ Health = 30 };
+            var lion = new Lion { Health = 30 };
             var antelope = new Antelope { CurrentPosition = new Coordinates { X = 5, Y = 6 } };
 
             mover.LionEatAntelope(lion, antelope);
@@ -540,9 +499,12 @@ namespace Tests
         public void MakeMove_AnimalAsExpected_AnimalPropertiesAreChanged()
         {
             var mover = new AnimalMover(10, 10, new List<Animal>());
-            var animal = new Animal { CurrentPosition = new Coordinates { X = 3, Y = 4 },
-                NextPosition = new Coordinates { X = 4, Y = 7 }, 
-                Health = 10};
+            var animal = new Animal
+            {
+                CurrentPosition = new Coordinates { X = 3, Y = 4 },
+                NextPosition = new Coordinates { X = 4, Y = 7 },
+                Health = 10
+            };
 
             mover.MakeMove(animal);
 
@@ -587,7 +549,7 @@ namespace Tests
         public void LionsNextAction_LionCloseToAntelope_LionEatsAntelope()
         {
             var mover = new AnimalMover(10, 10, new List<Animal>());
-            var lion = new Lion { CurrentPosition = new Coordinates { X = 6, Y = 7}, Health = 30 };
+            var lion = new Lion { CurrentPosition = new Coordinates { X = 6, Y = 7 }, Health = 30 };
             var antelope = new Antelope { CurrentPosition = new Coordinates { X = 5, Y = 7 } };
             var spacesToMove = new List<Coordinates>();
 
@@ -645,6 +607,243 @@ namespace Tests
 
             var result = Assert.Throws<AggregateException>(() => mover.LionsNextAction(lion, antelope, spacesToMove));
             Assert.Equal("Invalid data (Current Position for lion is not set.) (Next Position for antelope is not set.)", result.Message);
+        }
+
+        [Fact]
+        public void ReturnListOfDistancePoints_ListOfPoints_ReturnExpectedListOfPoints()
+        {
+            var mover = new AnimalMover(10, 10, new List<Animal>());
+            var spacesForMove = new List<Coordinates>
+            {
+                new Coordinates{ X = 3, Y = 2},
+                new Coordinates{ X = 1, Y = 3},
+
+            };
+            var lions = new List<Lion>
+            {
+                new Lion{ CurrentPosition = new Coordinates{ X = 4, Y = 2}},
+                new Lion{ CurrentPosition = new Coordinates{ X = 1, Y = 1}}
+            };
+            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            var distancePoints = mover.ReturnListOfDistancePoints(spacesForMove, lions, antelope);
+
+            //00 10  20  30 40 50
+            //01 11  21  31 41 51
+            //02 12 (22) 32 42 52
+            //03 13  23  33 43 53
+            //04 14  24  34 44 54
+            //05 15  25  35 45 55
+
+            // 0.5 - nothing chdnged or got smaller,
+            // 4 - run from the closest lion,
+            // 3 - run from lion that stays on close diagonal
+            // 1.5 - run from lion that has two cells to catch antelope
+            // 1 - run from any farest lion
+
+            var expectedList = new List<double[]>
+            {
+                // points for first lion
+                new double[]{0.5, 1.5},
+                // points for second lion
+                new double[]{3, 3},
+            };
+
+            Assert.Equal(0.5, distancePoints[0][0]);
+            Assert.Equal(1.5, distancePoints[0][1]);
+            Assert.Equal(3, distancePoints[1][0]);
+            Assert.Equal(3, distancePoints[1][1]);
+        }
+
+        [Fact]
+        public void ReturnListOfDistancePoints_NoSpacesForMove_ReturnsEmptyList()
+        {
+            var mover = new AnimalMover(10, 10, new List<Animal>());
+            var spacesForMove = new List<Coordinates>();
+            var lions = new List<Lion>
+            {
+                new Lion{ CurrentPosition = new Coordinates{ X = 4, Y = 2}},
+                new Lion{ CurrentPosition = new Coordinates{ X = 1, Y = 1}}
+            };
+            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            var distancePoints = mover.ReturnListOfDistancePoints(spacesForMove, lions, antelope);
+
+            Assert.Empty(distancePoints);
+        }
+
+        [Fact]
+        public void ReturnListOfDistancePoints_AnimalsHaveNoPropertiesSet_ThrowException()
+        {
+            var mover = new AnimalMover(10, 10, new List<Animal>());
+            var spacesForMove = new List<Coordinates>
+            {
+                new Coordinates{ X = 3, Y = 2},
+                new Coordinates{ X = 1, Y = 3},
+
+            };
+            var lion = new Lion();
+            var lions = new List<Lion> { lion };
+            var antelope = new Antelope();
+
+            var result = Assert.Throws<AggregateException>(() => mover.ReturnListOfDistancePoints(spacesForMove, lions, antelope));
+            Assert.Equal($"Invalid data (Current Position for an antelope is not set.) (Current Position for lion with ID-{lion.ID} is not set.)", result.Message);
+        }
+
+        [Fact]
+        public void GetFarsetSpaceFromLion_ListOfAllAnimalsAndSpaces_FoundFarestPlaceFromLions()
+        {
+            var mover = new AnimalMover(10, 10, new List<Animal>());
+            var spacesForMove = new List<Coordinates>
+            {
+                new Coordinates{ X = 3, Y = 2},
+                new Coordinates{ X = 1, Y = 3},
+
+            };
+            var lions = new List<Lion>
+            {
+                new Lion{ CurrentPosition = new Coordinates{ X = 4, Y = 2}},
+                new Lion{ CurrentPosition = new Coordinates{ X = 1, Y = 1}}
+            };
+            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            var coordinates = mover.GetFarsetSpaceFromLion(spacesForMove, lions, antelope);
+
+            Assert.NotNull(coordinates);
+            Assert.Equal(1, coordinates.X);
+            Assert.Equal(3, coordinates.Y);
+        }
+
+        [Fact]
+        public void GetFarsetSpaceFromLion_NoPlacesToMove_ReturnSamePositionForAntelope()
+        {
+            var mover = new AnimalMover(10, 10, new List<Animal>());
+            var spacesForMove = new List<Coordinates>();
+            var lions = new List<Lion>
+            {
+                new Lion{ CurrentPosition = new Coordinates{ X = 4, Y = 2}},
+                new Lion{ CurrentPosition = new Coordinates{ X = 1, Y = 1}}
+            };
+            var antelope = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            var coordinates = mover.GetFarsetSpaceFromLion(spacesForMove, lions, antelope);
+
+            Assert.NotNull(coordinates);
+            Assert.Equal(2, coordinates.X);
+            Assert.Equal(2, coordinates.Y);
+        }
+
+        [Fact]
+        public void GetFarsetSpaceFromLion_AnimalsPositionAreNotSet_ThrowsException()
+        {
+            var mover = new AnimalMover(10, 10, new List<Animal>());
+            var spacesForMove = new List<Coordinates>
+            {
+                new Coordinates{ X = 3, Y = 2},
+                new Coordinates{ X = 1, Y = 3},
+
+            };
+
+            var lion = new Lion();
+            var lions = new List<Lion> { lion };
+            var antelope = new Antelope();
+
+            var result = Assert.Throws<AggregateException>(() => mover.GetFarsetSpaceFromLion(spacesForMove, lions, antelope));
+            Assert.Equal($"Invalid data (Current Position for an antelope is not set.) (Current Position for lion with ID-{lion.ID} is not set.)", result.Message);
+        }
+
+        [Fact]
+        public void SetNextPositionForAnimal_NoFreeSpacesToMove_AnimalStaysOnSamePosition()
+        {
+            var animals = new List<Animal>
+            {
+                new Animal { NextPosition = new Coordinates{ X = 0, Y = 0} },
+                new Animal { NextPosition = new Coordinates{ X = 0, Y = 1 } },
+                new Animal { NextPosition = new Coordinates{ X = 1, Y = 0 } },
+            };
+            var mover = new AnimalMover(2, 2, animals);
+            var animal = new Antelope { CurrentPosition = new Coordinates { X = 1, Y = 1}};
+
+            mover.SetNextPositionForAnimal(animal);
+
+            Assert.NotNull(animal.NextPosition);
+            Assert.Equal(1, animal.NextPosition.X);
+            Assert.Equal(1, animal.NextPosition.Y);
+        }
+
+        [Fact]
+        public void SetNextPositionForAnimal_LionHasAntelopeInVisionRange_LionMoveCloserToAntelope()
+        {
+            var animals = new List<Animal>
+            {
+                new Antelope { CurrentPosition = new Coordinates {X = 1, Y = 1 },
+                               NextPosition = new Coordinates{ X = 0, Y = 0 } },
+            };
+
+            var mover = new AnimalMover(5, 5, animals);
+            var animal = new Lion { VisionRange = 2, CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            mover.SetNextPositionForAnimal(animal);
+
+            Assert.NotNull(animal.NextPosition);
+            Assert.Equal(1, animal.NextPosition.X);
+            Assert.Equal(1, animal.NextPosition.Y);
+        }
+
+        [Fact]
+        public void SetNextPositionForAnimal_LionDontSeeAntelope_LionMoveRandomly()
+        {
+            var mover = new AnimalMover(5, 5, new List<Animal>());
+            var animal = new Lion { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            mover.SetNextPositionForAnimal(animal);
+
+            Assert.NotNull(animal.NextPosition);
+            Assert.InRange(animal.NextPosition.X, 1, 3);
+            Assert.InRange(animal.NextPosition.Y, 1, 3);
+        }
+
+        [Fact]
+        public void SetNextPositionForAnimal_AntelopeSeeLion_AntelopeMoveFromLions()
+        {
+            var animals = new List<Animal>
+            {
+                new Lion { CurrentPosition = new Coordinates {X = 1, Y = 1 } },
+                new Lion { CurrentPosition = new Coordinates {X = 1, Y = 3 } },
+                new Lion { CurrentPosition = new Coordinates {X = 3, Y = 1 } },
+            };
+
+            var mover = new AnimalMover(5, 5, animals);
+            var animal = new Antelope { VisionRange = 2, CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            mover.SetNextPositionForAnimal(animal);
+
+            Assert.NotNull(animal.NextPosition);
+            Assert.Equal(3, animal.NextPosition.X);
+            Assert.Equal(3, animal.NextPosition.Y);
+        }
+
+        [Fact]
+        public void SetNextPositionForAnimal_AntelopeDontSeeLions_AntelopeMoveRandomly()
+        {
+            var mover = new AnimalMover(5, 5, new List<Animal>());
+            var animal = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
+
+            mover.SetNextPositionForAnimal(animal);
+
+            Assert.NotNull(animal.NextPosition);
+            Assert.InRange(animal.NextPosition.X, 1, 3);
+            Assert.InRange(animal.NextPosition.Y, 1, 3);
+        }
+
+        [Fact]
+        public void SetNextPositionForAnimal_AnimalHasNoTypePropertiesAreNotSet_ThrowException()
+        {
+            var mover = new AnimalMover(5, 5, new List<Animal>());
+            var animal = new Animal();
+
+            var result = Assert.Throws<AggregateException>(() => mover.SetNextPositionForAnimal(animal));
+            Assert.Equal($"Invalid data (Current Position for an animal is not set.) (Animal has no type!)", result.Message);
         }
     }
 }

@@ -82,6 +82,23 @@
         /// <param name="animal">Animal to set next position to.</param>
         public void SetNextPositionForAnimal(Animal animal)
         {
+            var exceptions = new List<Exception>();
+
+            if (animal.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Current Position for an animal is not set."));
+            }
+
+            if (animal.GetType() == typeof(Animal))
+            {
+                exceptions.Add(new Exception("Animal has no type!"));
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
             var closestAnimalList = AnimalsInVisionRange(animal);
             var movePossibility = PossibleMoves(animal);
 
@@ -112,10 +129,6 @@
                 var lions = closestAnimalList.OfType<Lion>().ToList();
 
                 animal.NextPosition = lions.Count != 0 ? GetFarsetSpaceFromLion(movePossibility, lions, (Antelope)animal) : RandomMovePosition(movePossibility);
-            }
-            else
-            {
-                throw new Exception("Animal has no type!");
             }
         }
 
@@ -396,21 +409,28 @@
 
             var distances = ReturnListOfDistancePoints(freeSpaceToMove, lionsInTheVisionRange, antelope);
 
-            for (int i = 0; i < freeSpaceToMove.Count; i++)
+            if(freeSpaceToMove.Count == 0)
             {
-                foreach (var distance in distances)
-                {
-                    distanceSum += distance[i];
-                }
-
-                if (distanceSum > distanceMaxSum)
-                {
-                    distanceMaxSum = distanceSum;
-                    maxDistance = freeSpaceToMove[i];
-                }
-
-                distanceSum = 0;
+                maxDistance = antelope.CurrentPosition;
             }
+            else
+            {
+                for (int i = 0; i < freeSpaceToMove.Count; i++)
+                {
+                    foreach (var distance in distances)
+                    {
+                        distanceSum += distance[i];
+                    }
+
+                    if (distanceSum > distanceMaxSum)
+                    {
+                        distanceMaxSum = distanceSum;
+                        maxDistance = freeSpaceToMove[i];
+                    }
+
+                    distanceSum = 0;
+                }
+            }            
 
             return maxDistance;
         }
@@ -424,41 +444,64 @@
         /// <returns>List of arrays with distance points till lions on each free space for antelope to move.</returns>
         public List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
+            var exceptions = new List<Exception>();
+
+            if (antelope.CurrentPosition == null)
+            {
+                exceptions.Add(new Exception("Current Position for an antelope is not set."));
+            }
+
+            foreach (var lion in lionsInTheVisionRange)
+            {
+                if(lion.CurrentPosition == null)
+                {
+                    exceptions.Add(new Exception($"Current Position for lion with ID-{lion.ID} is not set."));
+                }
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException("Invalid data", exceptions);
+            }
+
             var distances = new List<double[]>();
 
-            for (int l = 0; l < lionsInTheVisionRange.Count; l++)
+            if(freeSpaceToMove.Count > 0)
             {
-                var previousDistance = FindDistanceBetweenTwoCoordinates(lionsInTheVisionRange[l].CurrentPosition, antelope.CurrentPosition);
-                double[] distancesUntilLions = new double[freeSpaceToMove.Count];
-
-                for (int i = 0; i < freeSpaceToMove.Count; i++)
+                for (int l = 0; l < lionsInTheVisionRange.Count; l++)
                 {
-                    var currentDistance = FindDistanceBetweenTwoCoordinates(freeSpaceToMove[i], lionsInTheVisionRange[l].CurrentPosition);
+                    var previousDistance = FindDistanceBetweenTwoCoordinates(lionsInTheVisionRange[l].CurrentPosition, antelope.CurrentPosition);
+                    double[] distancesUntilLions = new double[freeSpaceToMove.Count];
 
-                    if (currentDistance <= previousDistance)
+                    for (int i = 0; i < freeSpaceToMove.Count; i++)
                     {
-                        distancesUntilLions[i] = 0.5;
+                        var currentDistance = FindDistanceBetweenTwoCoordinates(freeSpaceToMove[i], lionsInTheVisionRange[l].CurrentPosition);
+
+                        if (currentDistance <= previousDistance)
+                        {
+                            distancesUntilLions[i] = 0.5;
+                        }
+                        else if (previousDistance <= 1 && currentDistance > previousDistance)
+                        {
+                            distancesUntilLions[i] = 4;
+                        }
+                        else if (previousDistance > 1 && previousDistance < 2 && currentDistance > previousDistance)
+                        {
+                            distancesUntilLions[i] = 3;
+                        }
+                        else if (previousDistance == 2 && currentDistance > previousDistance)
+                        {
+                            distancesUntilLions[i] = 1.5;
+                        }
+                        else if (previousDistance > 2 && currentDistance > previousDistance)
+                        {
+                            distancesUntilLions[i] = 1;
+                        }
                     }
-                    else if (previousDistance <= 1 && currentDistance > previousDistance)
-                    {
-                        distancesUntilLions[i] = 4;
-                    }
-                    else if (previousDistance > 1 && previousDistance < 2 && currentDistance > previousDistance)
-                    {
-                        distancesUntilLions[i] = 3;
-                    }
-                    else if (previousDistance == 2 && currentDistance > previousDistance)
-                    {
-                        distancesUntilLions[i] = 1.5;
-                    }
-                    else if (previousDistance > 2 && currentDistance > previousDistance)
-                    {
-                        distancesUntilLions[i] = 1;
-                    }
+
+                    distances.Add(distancesUntilLions);
                 }
-
-                distances.Add(distancesUntilLions);
-            }
+            }           
 
             return distances;
         }
@@ -481,10 +524,8 @@
                 exceptions.Add(new Exception("Next Position for an animal is not set."));
             }
 
-            // If we have any exceptions...
             if (exceptions.Any())
             {
-                // throw them all
                 throw new AggregateException("Invalid data", exceptions);
             }
 
