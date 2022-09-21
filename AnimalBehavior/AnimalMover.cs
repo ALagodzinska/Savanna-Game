@@ -137,7 +137,7 @@
         /// </summary>
         /// <param name="animal">Animal whose nearest animals are to be found.</param>
         /// <returns>Returns list of animals that are in a vison range of one animal.</returns>
-        public List<Animal> AnimalsInVisionRange(Animal animal)
+        private List<Animal> AnimalsInVisionRange(Animal animal)
         {
             Coordinates coordinates = new();
             List<Animal> closestAnimalList = new List<Animal>();
@@ -230,7 +230,7 @@
         /// <param name="antelopesAround">List of antelopes in animals vision range.</param>
         /// <param name="currentAnimal">Animal.</param>
         /// <returns>Closest antelope to an animal.</returns>
-        public Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
+        private Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal)
         {
             if(currentAnimal.CurrentPosition == null)
             {
@@ -259,7 +259,7 @@
         /// </summary>
         /// <param name="moves">List with available places to move for an animal.</param>
         /// <returns>Coordinates for next move.</returns>
-        public Coordinates RandomMovePosition(List<Coordinates> moves)
+        private Coordinates RandomMovePosition(List<Coordinates> moves)
         {
             if(moves.Count == 0)
             {
@@ -293,7 +293,7 @@
         /// <param name="lionToMove">Lion to make a move.</param>
         /// <param name="closestAntelope">Nearest antelope in vision range.</param>
         /// <param name="possibleSpacesToMove">List of possible places to make a move.</param>
-        public void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove)
+        private void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove)
         {
             var exceptions = new List<Exception>();
 
@@ -335,7 +335,7 @@
         /// </summary>
         /// <param name="lion">Lion.</param>
         /// <param name="antelope">Antelope near lion.</param>
-        public void LionEatAntelope(Lion lion, Antelope antelope)
+        private void LionEatAntelope(Lion lion, Antelope antelope)
         {
             if (antelope.CurrentPosition == null)
             {
@@ -357,7 +357,7 @@
         /// <param name="freeSpaceToMove">Possibilities for lion to move.</param>
         /// <param name="closestAntelope">Closest antelope to lion.</param>
         /// <returns>Coordinates for lion to make next move.</returns>
-        public Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope, Lion lion)
+        private Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope, Lion lion)
         {
             var exceptions = new List<Exception>();
 
@@ -401,7 +401,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to make a move.</param>
         /// <returns>Coordinates for antelope to run from lions.</returns>
-        public Coordinates GetFarsetSpaceFromLion(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
+        private Coordinates GetFarsetSpaceFromLion(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             double distanceMaxSum = 0;
             double distanceSum = 0;
@@ -442,7 +442,7 @@
         /// <param name="lionsInTheVisionRange">List of lions in the vision range.</param>
         /// <param name="antelope">Antelope to find distances.</param>
         /// <returns>List of arrays with distance points till lions on each free space for antelope to move.</returns>
-        public List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
+        private List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope)
         {
             var exceptions = new List<Exception>();
 

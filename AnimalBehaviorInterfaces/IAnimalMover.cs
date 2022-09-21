@@ -17,27 +17,27 @@
 
         void SetNextPositionForAnimal(Animal animal);
 
-        List<Animal> AnimalsInVisionRange(Animal animal);
+        //List<Animal> AnimalsInVisionRange(Animal animal);
 
         List<Coordinates> PossibleMoves(Animal animal);
 
         bool DoesPlaceWillBeTakenInNextStep(Coordinates coordinates);
 
-        Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal);
+        //Antelope? GetClosestAntelope(List<Antelope> antelopesAround, Animal currentAnimal);
 
-        Coordinates RandomMovePosition(List<Coordinates> moves);
+        //Coordinates RandomMovePosition(List<Coordinates> moves);
 
         double FindDistanceBetweenTwoCoordinates(Coordinates neighbourAnimalCoordinates, Coordinates currentAnimalCoordinates);
 
-        void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove);
+        //void LionsNextAction(Lion lionToMove, Antelope closestAntelope, List<Coordinates> possibleSpacesToMove);
 
-        void LionEatAntelope(Lion lion, Antelope antelope);
+        //void LionEatAntelope(Lion lion, Antelope antelope);
 
-        Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope, Lion lion);
+        //Coordinates GetClosestSpaceToAntelope(List<Coordinates> freeSpaceToMove, Antelope closestAntelope, Lion lion);
 
-        Coordinates GetFarsetSpaceFromLion(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope);
+        //Coordinates GetFarsetSpaceFromLion(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope);
 
-        List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope);
+        //List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope);
 
         void MakeMove(Animal animal);
     }

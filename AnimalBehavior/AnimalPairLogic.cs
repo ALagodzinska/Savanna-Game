@@ -22,7 +22,7 @@
         /// <summary>
         /// Field to use AnimalMover logic.
         /// </summary>
-        public IAnimalMover AnimalMovers { get; set; }
+        private IAnimalMover AnimalMovers { get; set; }
 
         /// <summary>
         /// Assign values to class properties.
@@ -72,7 +72,7 @@
         /// Create pair for animals that stand nearby, check if they will stay together in next iteration and adds them to pair list.
         /// </summary>
         /// <param name="mainAnimal">Animal to find a pair for.</param>
-        public void CheckIfAnimalHavePair(Animal mainAnimal)
+        private void CheckIfAnimalHavePair(Animal mainAnimal)
         {
             var listWithCloseAnimalsOneType = AnimalsNearbyWithSameType(mainAnimal);
 
@@ -105,12 +105,12 @@
         /// Adds new animal pair to an animal pair list.
         /// </summary>
         /// <param name="animalPair">Animal pair.</param>
-        public void AddNewPair(AnimalPair animalPair) => AnimalPairs.Add(animalPair);
+        private void AddNewPair(AnimalPair animalPair) => AnimalPairs.Add(animalPair);
 
         /// <summary>
         /// Checks if animals stay together for the next round.
         /// </summary>
-        public void ActionForPairsOnMove()
+        private void ActionForPairsOnMove()
         {
             if (AnimalPairs.Count > 0)
             {
@@ -140,7 +140,7 @@
         /// </summary>
         /// <param name="animal">Animal to find neighbours for.</param>
         /// <returns>List of animals nearby.</returns>
-        public List<Animal> AnimalsNearbyWithSameType(Animal animal)
+        private List<Animal> AnimalsNearbyWithSameType(Animal animal)
         {
             var exceptions = new List<Exception>();
 
@@ -195,7 +195,7 @@
         /// Creates new animal and add baby to the newborn list.
         /// </summary>
         /// <param name="animalPair">Couple to have a baby.</param>
-        public void AnimalToBeBorn(AnimalPair animalPair)
+        private void AnimalToBeBorn(AnimalPair animalPair)
         {
             //return place for animal to be born 
             var bornAnimalCoordinates = GetPlaceToBorn(animalPair.AnimalWithLargestID, animalPair.AnimalWithSmallestID);
@@ -223,7 +223,7 @@
         /// <param name="spacesAroundFirstParent">List of free spaces to move of first parent.</param>
         /// <param name="spacesAroundSecondParent">List of free spaces to move of second parent.</param>
         /// <returns>List of unrepetitive places to place a newborn animal to.</returns>
-        public List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
+        private List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
         {
             for (int i = 0; i < spacesAroundFirstParent.Count; i++)
             {
@@ -247,7 +247,7 @@
         /// <param name="oneParent">One animal from the pair.</param>
         /// <param name="secondParent">Second animal from the pair.</param>
         /// <returns>Coordinates for newborn animals position on game field.</returns>
-        public Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
+        private Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
             var exceptions = new List<Exception>();
 
