@@ -6,15 +6,20 @@ namespace Tests
 
     public class AnimalMoverTest
     {
+        private AnimalMover _animalMover;
+        public AnimalMoverTest()
+        {
+            _animalMover = new AnimalMover(10, 10, new List<Animal>());
+        }
+
         [Fact]
         public void SetNewAnimalCurrentPosition_NewPosition_ValidPosition()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal();
             // check that animal position is empty
             Assert.Null(animal.CurrentPosition);
             // set current position
-            mover.SetNewAnimalCurrentPosition(animal);
+            _animalMover.SetNewAnimalCurrentPosition(animal);
             // check the position isn't null
             Assert.NotNull(animal.CurrentPosition);
             // check in range of field
@@ -25,7 +30,6 @@ namespace Tests
         [Fact]
         public void SetNewAnimalCurrentPosition_PositionAlreadySet_DoesntChangePosition()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal();
             animal.CurrentPosition = new Coordinates()
             {
@@ -33,7 +37,7 @@ namespace Tests
                 Y = 8
             };
             // generate current position
-            mover.SetNewAnimalCurrentPosition(animal);
+            _animalMover.SetNewAnimalCurrentPosition(animal);
             // check the position isn't null
             Assert.NotNull(animal.CurrentPosition);
             // check the position did not change
@@ -80,10 +84,9 @@ namespace Tests
         [Fact]
         public void GetAnimalByCurrentCoordinates_AnimalWithSuchCoordinatesDontExist_ReturnsNull()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var coordinates = new Coordinates { X = 8, Y = 5 };
             // get animal by position
-            var animal = mover.GetAnimalByCurrentCoordinates(coordinates);
+            var animal = _animalMover.GetAnimalByCurrentCoordinates(coordinates);
             // check animal is null
             Assert.Null(animal);
         }
@@ -241,10 +244,9 @@ namespace Tests
         [Fact]
         public void DoesPlaceWillBeTakenInNextStep_PlaceIsFree_ReturnsFalse()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var coordinates = new Coordinates { X = 8, Y = 5 };
             // check if place will be free
-            var isPlaceTaken = mover.DoesPlaceWillBeTakenInNextStep(coordinates);
+            var isPlaceTaken = _animalMover.DoesPlaceWillBeTakenInNextStep(coordinates);
             // check if is false
             Assert.False(isPlaceTaken);
         }
@@ -252,10 +254,9 @@ namespace Tests
         [Fact]
         public void PossibleMoves_AroundAnimalAreFreeSpacesToMove_ReturnListOfPossibleMoves()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal { CurrentPosition = new Coordinates { X = 5, Y = 5, } };
             // get possible moves
-            var possibleMoves = mover.PossibleMoves(animal);
+            var possibleMoves = _animalMover.PossibleMoves(animal);
             // check list is not null
             Assert.NotNull(possibleMoves);
             // check is not empty
@@ -286,14 +287,9 @@ namespace Tests
         [Fact]
         public void PossibleMoves_AnimalCurrentPositionIsOutOfFieldRange_ReturnEmptyList()
         {
-            var listOfAnimals = new List<Animal>
-            {
-                new Animal { NextPosition = new Coordinates{ X = 10, Y = 10} },
-            };
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal() { CurrentPosition = new Coordinates { X = 11, Y = 10 } };
             // get possible moves
-            var possibleMoves = mover.PossibleMoves(animal);
+            var possibleMoves = _animalMover.PossibleMoves(animal);
             // check the list is not null but is empty
             Assert.NotNull(possibleMoves);
             Assert.Empty(possibleMoves);
@@ -302,10 +298,9 @@ namespace Tests
         [Fact]
         public void PossibleMoves_AnimalCurrentPositionIsNull_ReturnEmptyList()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal();
             // get list of possible moves
-            var possibleMoves = mover.PossibleMoves(animal);
+            var possibleMoves = _animalMover.PossibleMoves(animal);
             //check if not null and empty
             Assert.NotNull(possibleMoves);
             Assert.Empty(possibleMoves);
@@ -314,11 +309,10 @@ namespace Tests
         [Fact]
         public void FindDistanceBetweenTwoCoordinates_Double_ReturnsAsExpected()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var coordinates1 = new Coordinates { X = 5, Y = 6 };
             var coordinates2 = new Coordinates { X = 7, Y = 7 };
             // get distance between two coordinates
-            var distance = mover.FindDistanceBetweenTwoCoordinates(coordinates1, coordinates2);
+            var distance = _animalMover.FindDistanceBetweenTwoCoordinates(coordinates1, coordinates2);
             // check if result is as expected
             Assert.Equal(2.236, distance, 3);
         }
@@ -498,7 +492,6 @@ namespace Tests
         [Fact]
         public void MakeMove_AnimalAsExpected_AnimalPropertiesAreChanged()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal
             {
                 CurrentPosition = new Coordinates { X = 3, Y = 4 },
@@ -506,7 +499,7 @@ namespace Tests
                 Health = 10
             };
 
-            mover.MakeMove(animal);
+            _animalMover.MakeMove(animal);
 
             Assert.Equal(4, animal.CurrentPosition.X);
             Assert.Equal(7, animal.CurrentPosition.Y);
@@ -518,7 +511,6 @@ namespace Tests
         [Fact]
         public void MakeMove_AnimalWillDie_PropertiesForIsAliveIsChanged()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal
             {
                 CurrentPosition = new Coordinates { X = 3, Y = 4 },
@@ -526,7 +518,7 @@ namespace Tests
                 Health = 0.5
             };
 
-            mover.MakeMove(animal);
+            _animalMover.MakeMove(animal);
 
             Assert.Equal(4, animal.CurrentPosition.X);
             Assert.Equal(7, animal.CurrentPosition.Y);
@@ -538,10 +530,9 @@ namespace Tests
         [Fact]
         public void MakeMove_AnimalHasNoPropertiesSet_ThrowAnException()
         {
-            var mover = new AnimalMover(10, 10, new List<Animal>());
             var animal = new Animal();
 
-            var result = Assert.Throws<AggregateException>(() => mover.MakeMove(animal));
+            var result = Assert.Throws<AggregateException>(() => _animalMover.MakeMove(animal));
             Assert.Equal("Invalid data (Current Position for an animal is not set.) (Next Position for an animal is not set.)", result.Message);
         }
 
@@ -793,10 +784,9 @@ namespace Tests
         [Fact]
         public void SetNextPositionForAnimal_LionDontSeeAntelope_LionMoveRandomly()
         {
-            var mover = new AnimalMover(5, 5, new List<Animal>());
             var animal = new Lion { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
 
-            mover.SetNextPositionForAnimal(animal);
+            _animalMover.SetNextPositionForAnimal(animal);
 
             Assert.NotNull(animal.NextPosition);
             Assert.InRange(animal.NextPosition.X, 1, 3);
@@ -826,10 +816,9 @@ namespace Tests
         [Fact]
         public void SetNextPositionForAnimal_AntelopeDontSeeLions_AntelopeMoveRandomly()
         {
-            var mover = new AnimalMover(5, 5, new List<Animal>());
             var animal = new Antelope { CurrentPosition = new Coordinates { X = 2, Y = 2 } };
 
-            mover.SetNextPositionForAnimal(animal);
+            _animalMover.SetNextPositionForAnimal(animal);
 
             Assert.NotNull(animal.NextPosition);
             Assert.InRange(animal.NextPosition.X, 1, 3);
@@ -839,11 +828,28 @@ namespace Tests
         [Fact]
         public void SetNextPositionForAnimal_AnimalHasNoTypePropertiesAreNotSet_ThrowException()
         {
-            var mover = new AnimalMover(5, 5, new List<Animal>());
             var animal = new Animal();
 
-            var result = Assert.Throws<AggregateException>(() => mover.SetNextPositionForAnimal(animal));
-            Assert.Equal($"Invalid data (Current Position for an animal is not set.) (Animal has no type!)", result.Message);
+            var result = Assert.Throws<AggregateException>(() => _animalMover.SetNextPositionForAnimal(animal));
+            Assert.Equal($"Invalid data (Current Position for animal is not set.) (Type for animal is not set.)", result.Message);
+        }
+
+        [Fact]
+        public void AnimalsExceptions_AnimalsCurrentPositionIsNotSet_ThrowException()
+        {
+            var animal = new Antelope();
+
+            var result = Assert.Throws<AggregateException>(() => _animalMover.AnimalsExceptions(animal));
+            Assert.Equal($"Invalid data (Current Position for animal is not set.)", result.Message);
+        }
+
+        [Fact]
+        public void AnimalsExceptions_AnimalsTypeIsNotSet_ThrowException()
+        {
+            var animal = new Animal { CurrentPosition = new Coordinates { X= 5, Y = 3} };
+
+            var result = Assert.Throws<AggregateException>(() => _animalMover.SetNextPositionForAnimal(animal));
+            Assert.Equal($"Invalid data (Type for animal is not set.)", result.Message);
         }
     }
 }

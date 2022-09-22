@@ -11,15 +11,15 @@ namespace AnimalBehaviorInterfaces
 
         //IAnimalMover AnimalMovers { get; set; }
 
-        void AnimalPairsCreated();
+        //void AnimalPairsCreated();
 
         void AddNewbornsToGame();
 
-        //void CheckIfAnimalHavePair(Animal mainAnimal);
+        void CheckIfAnimalHavePair(Animal mainAnimal);
 
         //void AddNewPair(AnimalPair animalPair);
 
-        //void ActionForPairsOnMove();
+        void ActionForPairsOnMove();
 
         //List<Animal> AnimalsNearbyWithSameType(Animal animal);
 

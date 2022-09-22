@@ -40,5 +40,7 @@
         //List<double[]> ReturnListOfDistancePoints(List<Coordinates> freeSpaceToMove, List<Lion> lionsInTheVisionRange, Antelope antelope);
 
         void MakeMove(Animal animal);
+        
+        void AnimalsExceptions(Animal animal); 
     }
 }

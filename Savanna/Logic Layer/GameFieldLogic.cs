@@ -157,8 +157,14 @@
                 _animalMoverPlugin.SetNextPositionForAnimal(animal);
             }
 
-            //apply pair logic, create pairs
-            _animalPairLogicPlugin.AnimalPairsCreated();
+            //check if together for next iteration
+            _animalPairLogicPlugin.ActionForPairsOnMove();
+            //create couple if together in this and next iteration
+            foreach (var animal in Animals)
+            {
+                _animalPairLogicPlugin.CheckIfAnimalHavePair(animal);
+            }
+            _animalPairLogicPlugin.AnimalPairs.RemoveAll(c => c.DoesBrokeUp == true);
 
             //make move for each animal
             foreach (var animal in Animals)

@@ -36,23 +36,6 @@
         }
 
         /// <summary>
-        /// Applay pairs logic.
-        /// </summary>
-        public void AnimalPairsCreated()
-        {
-            //check if together for next iteration
-            ActionForPairsOnMove();
-
-            //create couple if together in this and next iteration
-            foreach (var animal in AnimalMovers.Animals)
-            {
-                CheckIfAnimalHavePair(animal);
-            }
-
-            AnimalPairs.RemoveAll(c => c.DoesBrokeUp == true);
-        }
-
-        /// <summary>
         /// Apply logic for adding newborn animals to game.
         /// </summary>
         public void AddNewbornsToGame()
@@ -72,7 +55,7 @@
         /// Create pair for animals that stand nearby, check if they will stay together in next iteration and adds them to pair list.
         /// </summary>
         /// <param name="mainAnimal">Animal to find a pair for.</param>
-        private void CheckIfAnimalHavePair(Animal mainAnimal)
+        public void CheckIfAnimalHavePair(Animal mainAnimal)
         {
             var listWithCloseAnimalsOneType = AnimalsNearbyWithSameType(mainAnimal);
 
@@ -110,7 +93,7 @@
         /// <summary>
         /// Checks if animals stay together for the next round.
         /// </summary>
-        private void ActionForPairsOnMove()
+        public void ActionForPairsOnMove()
         {
             if (AnimalPairs.Count > 0)
             {
@@ -142,22 +125,7 @@
         /// <returns>List of animals nearby.</returns>
         private List<Animal> AnimalsNearbyWithSameType(Animal animal)
         {
-            var exceptions = new List<Exception>();
-
-            if (animal.CurrentPosition == null)
-            {
-                exceptions.Add(new Exception("Current Position for animal is not set."));
-            }
-
-            if (animal.GetType() == typeof(Animal))
-            {
-                exceptions.Add(new Exception("Type for animal is not set."));
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException("Invalid data", exceptions);
-            }
+            AnimalMovers.AnimalsExceptions(animal);
 
             Coordinates coordinates = new Coordinates();
             List<Animal> closestAnimalList = new List<Animal>();
@@ -190,6 +158,7 @@
 
             return closestAnimalList;
         }
+
 
         /// <summary>
         /// Creates new animal and add baby to the newborn list.
@@ -249,22 +218,8 @@
         /// <returns>Coordinates for newborn animals position on game field.</returns>
         private Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
-            var exceptions = new List<Exception>();
-
-            if (oneParent.CurrentPosition == null || secondParent.CurrentPosition == null)
-            {
-                exceptions.Add(new Exception("Current Position for animal is not set."));
-            }
-
-            if (oneParent.GetType() == typeof(Animal) || secondParent.GetType() == typeof(Animal))
-            {
-                exceptions.Add(new Exception("Type for animal is not set."));
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException("Invalid data", exceptions);
-            }
+            AnimalMovers.AnimalsExceptions(oneParent);
+            AnimalMovers.AnimalsExceptions(secondParent);
 
             var animalMoves = AnimalMovers.PossibleMoves(oneParent);
             var sameAnimalTypeMoves = AnimalMovers.PossibleMoves(secondParent);
