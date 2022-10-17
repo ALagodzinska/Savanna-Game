@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savanna", "Savanna\Savanna.csproj", "{2F00F221-086C-4949-A1A9-E5DB6231E280}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Savanna", "Savanna\Savanna.csproj", "{2F00F221-086C-4949-A1A9-E5DB6231E280}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalBehaviorPlugin", "AnimalBehavior\AnimalBehaviorPlugin.csproj", "{1C967B21-AC00-4087-82C3-AE628B373D45}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalBehaviorInterfaces", "AnimalBehaviorInterfaces\AnimalBehaviorInterfaces.csproj", "{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{2F00F221-086C-4949-A1A9-E5DB6231E280}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F00F221-086C-4949-A1A9-E5DB6231E280}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F00F221-086C-4949-A1A9-E5DB6231E280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C967B21-AC00-4087-82C3-AE628B373D45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C967B21-AC00-4087-82C3-AE628B373D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C967B21-AC00-4087-82C3-AE628B373D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C967B21-AC00-4087-82C3-AE628B373D45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A727E4E0-E8CB-477F-8D71-CE1EBC3CBCE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

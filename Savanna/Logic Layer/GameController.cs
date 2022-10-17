@@ -4,17 +4,13 @@
     using System.Resources;
     using System.Reflection;
     using Savanna.Menu;
+    using Savanna.Resources;
 
     /// <summary>
     /// Controls main aspects of the game.
     /// </summary>
     public class GameController
     {
-        /// <summary>
-        /// Resource data.
-        /// </summary>
-        ResourceManager resourceManager = new ResourceManager("Savanna.Resources.ResourceFile", Assembly.GetExecutingAssembly());
-
         /// <summary>
         /// Stores main game logic.
         /// </summary>
@@ -23,7 +19,7 @@
         /// <summary>
         /// Stores menu data.
         /// </summary>
-        GameMenu menu;
+        SpecificGameMenu menu;
 
         /// <summary>
         /// Variable used to declare if a user exits an application.
@@ -35,7 +31,7 @@
         /// </summary>
         public GameController()
         {
-            menu = new GameMenu(resourceManager.GetString("MainMenuIntro"));
+            menu = new SpecificGameMenu(ResourceFile.MainMenuIntro);
         }
 
         /// <summary>
@@ -53,11 +49,11 @@
 
                 switch (selection.Index)
                 {
-                    case MainMenuOptions.PlayGame:
+                    case (int)MainMenuOptions.PlayGame:
                         DisplayGameRules();
                         GameActions();
                         break;
-                    case MainMenuOptions.ExitGame:
+                    case (int)MainMenuOptions.ExitGame:
                         ExitGame();
                         break;
                 }
@@ -70,7 +66,7 @@
         public void DisplayGameRules()
         {
             Console.Clear();
-            Console.WriteLine(resourceManager.GetString("GameRules"));
+            Console.WriteLine(ResourceFile.GameRules);
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
@@ -98,7 +94,7 @@
             do
             {
                 Thread.Sleep(1000);
-                gameLogic.AnimalsActionsOnMove();
+                gameLogic.ActionsOnIteration();
 
                 ConsoleKey? consoleKey = Console.KeyAvailable ? Console.ReadKey(true).Key : null;
                 if (consoleKey != null)

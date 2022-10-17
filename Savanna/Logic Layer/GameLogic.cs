@@ -21,26 +21,13 @@
         /// <summary>
         /// Does action for each animal in the game.
         /// </summary>
-        public void AnimalsActionsOnMove()
+        public void ActionsOnIteration()
         {
             var animals = gameFieldLogic.Animals;
 
             if (animals.Count != 0)
             {
-                gameFieldLogic.SetNextPositionForAnimals();
-
-                gameFieldLogic.AnimalPairsCreated();
-
-                foreach (var animal in animals)
-                {
-                    gameFieldLogic.MakeMove(animal);
-                }
-
-                gameFieldLogic.AddNewbornsToGame();
-
-                animals.RemoveAll(a => a.IsAlive == false);
-
-                gameFieldLogic.DrawGame();
+                gameFieldLogic.AnimalsActionsOnMove();
             }
         }
 

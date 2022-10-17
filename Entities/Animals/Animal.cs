@@ -1,6 +1,7 @@
 ﻿namespace Savanna.Entities.Animals
 {
     using Savanna.Entities.GameField;
+    using System;
 
     /// <summary>
     /// Base class for all animals with main properties.
@@ -45,7 +46,7 @@
         /// <summary>
         /// Field used for incrementing animals ID.
         /// </summary>
-        protected static int globalAnimalId = 0;
+        static int globalAnimalId = 0;
 
         /// <summary>
         /// Creates animal with assigned ID.

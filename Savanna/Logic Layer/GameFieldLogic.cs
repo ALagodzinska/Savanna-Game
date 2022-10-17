@@ -1,7 +1,9 @@
 ﻿namespace Savanna.Logic_Layer
 {
+    using AnimalBehaviorInterfaces;
     using Savanna.Entities.Animals;
     using Savanna.Entities.GameField;
+    using System.Reflection;
 
     /// <summary>
     /// Stores main game logic.
@@ -19,14 +21,14 @@
         GameField GameField;
 
         /// <summary>
-        /// Responsible for animal move and animal location on game field.
+        /// Animal moving logic plugin.
         /// </summary>
-        AnimalMover AnimalMover;
+        IAnimalMover _animalMoverPlugin = null;
 
         /// <summary>
-        /// Pair creation logic and newborn logic.
+        /// Animal pair logic plugin.
         /// </summary>
-        AnimalPairLogic AnimalPairLogic;
+        IAnimalPairLogic _animalPairLogicPlugin = null;
 
         /// <summary>
         /// Assign values to this class fields.
@@ -36,9 +38,8 @@
         {
 
             Animals = new List<Animal>();
-            AnimalMover = new AnimalMover(gameField.Height, gameField.Width, Animals);
-            AnimalPairLogic = new AnimalPairLogic(AnimalMover);
             GameField = gameField;
+            ReadExtensions();           
         }
 
         /// <summary>
@@ -68,7 +69,7 @@
             startCorner += cornerBottomLeft;
 
             //draw bottom of the border
-            for (int w = 0; w < GameField.Height; w++)
+            for (int w = 0; w < GameField.Width; w++)
             {
                 startCorner += horizontalLine;
             }
@@ -86,19 +87,8 @@
         /// <param name="animal">Animal.</param>
         public void SetAnimalPosition(Animal animal)
         {
-            AnimalMover.SetNewAnimalCurrentPosition(animal);
+            _animalMoverPlugin.SetNewAnimalCurrentPosition(animal);
             DrawAnimal(animal);
-        }
-
-        /// <summary>
-        /// Set position for all animals next move.
-        /// </summary>
-        public void SetNextPositionForAnimals()
-        {
-            foreach (var animal in Animals)
-            {
-                AnimalMover.SetNextPositionForAnimal(animal);
-            }
         }
 
         /// <summary>
@@ -115,7 +105,6 @@
                 }
             }
         }
-
 
         /// <summary>
         /// Display animal on a game screen.
@@ -161,51 +150,63 @@
         }
 
         /// <summary>
-        /// Apply logic for next animals move.
+        /// Does all animals actions on each iteration.
         /// </summary>
-        /// <param name="animal">Animal to move.</param>
-        public void MakeMove(Animal animal)
+        public void AnimalsActionsOnMove()
         {
-            animal.CurrentPosition = animal.NextPosition;
-            animal.NextPosition = null;
-
-            animal.Health -= 0.5;
-            if (animal.Health <= 0)
-            {
-                animal.IsAlive = false;
-            }
-        }
-
-        /// <summary>
-        /// Applay pairs logic.
-        /// </summary>
-        public void AnimalPairsCreated()
-        {
-            //check if together for next iteration
-            AnimalPairLogic.ActionForPairsOnMove();
-
-            //create couple if together in this and next iteration
+            //set next position to each animal
             foreach (var animal in Animals)
             {
-                AnimalPairLogic.CheckIfAnimalHavePair(animal);
+                _animalMoverPlugin.SetNextPositionForAnimal(animal);
             }
 
-            AnimalPairLogic.animalPairs.RemoveAll(c => c.DoesBrokeUp == true);
+            //apply pair logic, create pairs
+            _animalPairLogicPlugin.AnimalPairsCreated();
+
+            //make move for each animal
+            foreach (var animal in Animals)
+            {
+                _animalMoverPlugin.MakeMove(animal);
+            }
+
+            //add newborns in this round to a game
+            _animalPairLogicPlugin.AddNewbornsToGame();
+
+            //delete all dead animals
+            Animals.RemoveAll(a => a.IsAlive == false);
+
+            DrawGame();
         }
 
         /// <summary>
-        /// Apply logic for adding newborn animals to game.
+        /// Read extensions and assign values to plugins.
         /// </summary>
-        public void AddNewbornsToGame()
+        public void ReadExtensions()
         {
-            if (AnimalPairLogic.animalsToBeBorn.Count > 0)
-            {
-                foreach (var newborn in AnimalPairLogic.animalsToBeBorn)
-                {
-                    Animals.Add(newborn);
-                }
+            // 1- Read the dll files from the extensions folder.
+            var files = Directory.GetFiles("extensions", "*.dll");
 
-                AnimalPairLogic.animalsToBeBorn.Clear();
+            // 2- Read the assembly from files.
+            foreach (var file in files)
+            {
+                var assembly = Assembly.LoadFile(Path.Combine(Directory.GetCurrentDirectory(), file));
+
+                // 3- Extract all the types that implements IPlugin
+                var pluginAnimalMover = assembly.GetTypes()
+                            .Where(type => typeof(IAnimalMover).IsAssignableFrom(type)
+                            && !type.IsInterface).First();
+
+                var pluginAnimalPairLogic = assembly.GetTypes()
+                            .Where(type => typeof(IAnimalPairLogic).IsAssignableFrom(type)
+                            && !type.IsInterface).First();
+
+                // 4- Create an instance from the extracted type.
+                var pluginAnimalMoverInstance = Activator.CreateInstance(pluginAnimalMover, GameField.Height, GameField.Width, Animals) as IAnimalMover;
+                var pluginAnimalPairLogicInstance = Activator.CreateInstance(pluginAnimalPairLogic, pluginAnimalMoverInstance) as IAnimalPairLogic;
+
+                // 5- Assign values to fields.
+                _animalMoverPlugin = pluginAnimalMoverInstance;
+                _animalPairLogicPlugin = pluginAnimalPairLogicInstance;
             }
         }
     }
