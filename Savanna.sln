@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalBehaviorInterfaces", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{CC52D6A3-E11E-4C71-9D91-430946059022}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEC875C6-BADB-4605-B1EA-B86F7A79CBF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC52D6A3-E11E-4C71-9D91-430946059022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC52D6A3-E11E-4C71-9D91-430946059022}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC52D6A3-E11E-4C71-9D91-430946059022}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC52D6A3-E11E-4C71-9D91-430946059022}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

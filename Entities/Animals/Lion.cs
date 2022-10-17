@@ -21,8 +21,7 @@
         public Lion()
         {
             VisionRange = 2;
-            Health = 30;
-            IsAlive = true;
+            Health = 20;
         }
 
         /// <summary>

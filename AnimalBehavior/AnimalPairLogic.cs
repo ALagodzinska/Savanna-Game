@@ -22,7 +22,7 @@
         /// <summary>
         /// Field to use AnimalMover logic.
         /// </summary>
-        public IAnimalMover AnimalMovers { get; set; }
+        private IAnimalMover AnimalMovers { get; set; }
 
         /// <summary>
         /// Assign values to class properties.
@@ -33,23 +33,6 @@
             AnimalMovers = animalMover;
             AnimalPairs = new();
             AnimalsToBeBorn = new();
-        }
-
-        /// <summary>
-        /// Applay pairs logic.
-        /// </summary>
-        public void AnimalPairsCreated()
-        {
-            //check if together for next iteration
-            ActionForPairsOnMove();
-
-            //create couple if together in this and next iteration
-            foreach (var animal in AnimalMovers.Animals)
-            {
-                CheckIfAnimalHavePair(animal);
-            }
-
-            AnimalPairs.RemoveAll(c => c.DoesBrokeUp == true);
         }
 
         /// <summary>
@@ -80,6 +63,11 @@
             {
                 foreach (var closeAnimal in listWithCloseAnimalsOneType)
                 {
+                    if(closeAnimal.NextPosition == null || mainAnimal.NextPosition == null)
+                    {
+                        throw new Exception("Animals next position is not set.");
+                    }
+
                     var animalPair = new AnimalPair(mainAnimal, closeAnimal);
 
                     if (AnimalPairs.FirstOrDefault(c => c.AnimalWithLargestID == animalPair.AnimalWithLargestID
@@ -100,10 +88,7 @@
         /// Adds new animal pair to an animal pair list.
         /// </summary>
         /// <param name="animalPair">Animal pair.</param>
-        public void AddNewPair(AnimalPair animalPair)
-        {
-            AnimalPairs.Add(animalPair);
-        }
+        private void AddNewPair(AnimalPair animalPair) => AnimalPairs.Add(animalPair);
 
         /// <summary>
         /// Checks if animals stay together for the next round.
@@ -138,8 +123,10 @@
         /// </summary>
         /// <param name="animal">Animal to find neighbours for.</param>
         /// <returns>List of animals nearby.</returns>
-        public List<Animal> AnimalsNearbyWithSameType(Animal animal)
+        private List<Animal> AnimalsNearbyWithSameType(Animal animal)
         {
+            AnimalMovers.AnimalsExceptions(animal);
+
             Coordinates coordinates = new Coordinates();
             List<Animal> closestAnimalList = new List<Animal>();
 
@@ -172,11 +159,12 @@
             return closestAnimalList;
         }
 
+
         /// <summary>
         /// Creates new animal and add baby to the newborn list.
         /// </summary>
         /// <param name="animalPair">Couple to have a baby.</param>
-        public void AnimalToBeBorn(AnimalPair animalPair)
+        private void AnimalToBeBorn(AnimalPair animalPair)
         {
             //return place for animal to be born 
             var bornAnimalCoordinates = GetPlaceToBorn(animalPair.AnimalWithLargestID, animalPair.AnimalWithSmallestID);
@@ -204,7 +192,7 @@
         /// <param name="spacesAroundFirstParent">List of free spaces to move of first parent.</param>
         /// <param name="spacesAroundSecondParent">List of free spaces to move of second parent.</param>
         /// <returns>List of unrepetitive places to place a newborn animal to.</returns>
-        public List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
+        private List<Coordinates> GetListWithUniqueFreeSpacesAroundParents(List<Coordinates> spacesAroundFirstParent, List<Coordinates> spacesAroundSecondParent)
         {
             for (int i = 0; i < spacesAroundFirstParent.Count; i++)
             {
@@ -228,8 +216,11 @@
         /// <param name="oneParent">One animal from the pair.</param>
         /// <param name="secondParent">Second animal from the pair.</param>
         /// <returns>Coordinates for newborn animals position on game field.</returns>
-        public Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
+        private Coordinates? GetPlaceToBorn(Animal oneParent, Animal secondParent)
         {
+            AnimalMovers.AnimalsExceptions(oneParent);
+            AnimalMovers.AnimalsExceptions(secondParent);
+
             var animalMoves = AnimalMovers.PossibleMoves(oneParent);
             var sameAnimalTypeMoves = AnimalMovers.PossibleMoves(secondParent);
 
